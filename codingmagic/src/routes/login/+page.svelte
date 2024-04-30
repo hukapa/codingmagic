@@ -1,4 +1,21 @@
-<script>
+<script lang="ts">
+  import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+  import { createClient } from '@supabase/supabase-js'
+  import { onMount } from 'svelte';
+
+  const supabaseUrl = PUBLIC_SUPABASE_URL
+  const supabaseKey = PUBLIC_SUPABASE_ANON_KEY
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
+  let user: any;
+  let email = "";
+  let password = "";
+
+  onMount(async () => {
+    user = supabase.auth.getUser();
+  })
+
+  
 
 </script>
 
@@ -7,12 +24,12 @@
       <h2>Login</h2>
       <form>
         <div class="user-box">
-          <input type="text" name="" required value="">
+          <input type="email" name="" required bind:value={email} />
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label>Username</label>
+        <label> Email </label>
         </div>
         <div class="user-box">
-          <input type="password" name="" required value="">
+          <input type="password" name="" required  bind:value={password}>
           
           <!-- svelte-ignore a11y-label-has-associated-control -->
           <label>Password</label>

@@ -1,4 +1,20 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+    import { createClient } from '@supabase/supabase-js'
+
+    const supabaseUrl = PUBLIC_SUPABASE_URL
+    const supabaseKey = PUBLIC_SUPABASE_ANON_KEY
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    onMount(() => {
+        const{data: {subscription}} = supabase.auth.onAuthStateChange(() => {
+        });
+        return () => {
+                subscription.unsubscribe();
+            }
+    });
+
 
     let y:number
     let height:number
