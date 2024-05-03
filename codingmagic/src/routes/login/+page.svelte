@@ -41,6 +41,33 @@
         <input type="email" placeholder="Email" />
         <input type="password" placeholder="Password" />
         <button>Sign Up</button>
+        <h1>
+          Create an account with a
+          <span class="magic">
+            <span class="magic-star">
+              <svg viewBox="0 0 512 512">
+                <path
+                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
+                />
+              </svg>
+            </span>
+            <span class="magic-star">
+              <svg viewBox="0 0 512 512">
+                <path
+                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
+                />
+              </svg>
+            </span>
+            <span class="magic-star">
+              <svg viewBox="0 0 512 512">
+                <path
+                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
+                />
+              </svg>
+            </span>
+            <span class="magic-text">Magic Link!</span>
+          </span>
+        </h1>
       </form>
     </div>
     <div class="form-container sign-in-container">
@@ -102,6 +129,50 @@
     margin: 0;
   }
 
+  h1 > .magic {
+  display: inline-block;
+  position: relative;
+}
+
+h1 > .magic > .magic-star {
+  --size: clamp(20px, 1.5vw, 30px);
+  
+  animation: scale 700ms ease forwards;
+  display: block;
+  height: var(--size);
+  left: var(--star-left);
+  position: absolute;
+  top: var(--star-top);
+  width: var(--size);
+}
+
+h1 > .magic > .magic-star > svg {
+  animation: rotate 1000ms linear infinite;
+  display: block;
+  opacity: 0.7;
+}
+
+h1 > .magic > .magic-star > svg > path {
+  fill: var(--violet);
+}
+
+h1 > .magic > .magic-text {
+  animation: background-pan 3s linear infinite;
+  background: linear-gradient(
+    to right,
+    var(--purple),
+    var(--violet),
+    var(--pink),
+    var(--purple)
+  );
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+
+
   p {
     font-size: 14px;
     font-weight: 100;
@@ -152,7 +223,7 @@
   }
 
   form {
-    background-color:#ffffff;
+    background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -200,7 +271,7 @@
     transform: translateX(100%);
   }
 
-  .sign-up-container {  
+  .sign-up-container {
     left: 0;
     width: 50%;
     opacity: 0;
@@ -311,30 +382,5 @@
     margin: 0 5px;
     height: 40px;
     width: 40px;
-  }
-
-  footer {
-    background-color: #222;
-    color: #fff;
-    font-size: 14px;
-    bottom: 0;
-    position: fixed;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 999;
-  }
-
-  footer p {
-    margin: 10px 0;
-  }
-
-  footer i {
-    color: red;
-  }
-
-  footer a {
-    color: #3c97bf;
-    text-decoration: none;
   }
 </style>
