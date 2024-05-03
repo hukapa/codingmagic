@@ -1,247 +1,340 @@
 <script lang="ts">
-  import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-  import { createClient } from '@supabase/supabase-js'
-  import { onMount } from 'svelte';
+  import {
+    PUBLIC_SUPABASE_ANON_KEY,
+    PUBLIC_SUPABASE_URL,
+  } from "$env/static/public";
+  import { createClient } from "@supabase/supabase-js";
+  import { onMount } from "svelte";
+  import GitHub from "$lib/Icons/GitHub.svelte";
+  import Discord from "$lib/Icons/Discord.svelte";
+  import Google from "$lib/Icons/Google.svelte";
 
-  const supabaseUrl = PUBLIC_SUPABASE_URL
-  const supabaseKey = PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClient(supabaseUrl, supabaseKey)
+  const supabaseUrl = PUBLIC_SUPABASE_URL;
+  const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   let user: any;
   let email = "";
   let password = "";
+  let isRightPanelActive = true;
 
-  onMount(async () => {
-    user = supabase.auth.getUser();
-  })
-
-  
-
+  function toggleRightPanel() {
+    isRightPanelActive = !isRightPanelActive;
+  }
 </script>
 
-<div class="wrapped">
-  <div class="login-box">
-      <h2>Login</h2>
-      <form>
-        <div class="user-box">
-          <input type="email" name="" required bind:value={email} />
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label> Email </label>
+<div class="Container-Body">
+  <div
+    class={isRightPanelActive ? "container" : "container right-panel-active"}
+    id="container"
+  >
+    <div class="form-container sign-up-container">
+      <form action="#">
+        <h1>Create Account</h1>
+        <div class="social-container">
+          <a href="#" class="social"><GitHub /></a>
+          <a href="#" class="social"><Discord /></a>
+          <a href="#" class="social"><Google /></a>
         </div>
-        <div class="user-box">
-          <input type="password" name="" required  bind:value={password}>
-          
-          <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label>Password</label>
-        </div>
-        <!-- svelte-ignore a11y-invalid-attribute -->
-        <h2 style="color: white;">Don't have account yet?<a class="signup-link" href="/signup"><br>Sign up</a></h2>
-        <a class="submit" href="#">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          Submit
-        </a>
+        <span>or use your email for registration</span>
+        <input type="text" placeholder="Username" />
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <button>Sign Up</button>
       </form>
+    </div>
+    <div class="form-container sign-in-container">
+      <form action="#">
+        <h1>Sign in</h1>
+        <div class="social-container">
+          <a href="#" class="social"><GitHub /></a>
+          <a href="#" class="social"><Discord /></a>
+          <a href="#" class="social"><Google /></a>
+        </div>
+        <span>or use your account</span>
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <a href="#">Forgot your password?</a>
+        <button>Sign In</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Welcome Back!</h1>
+          <p>To keep connected with us please login with your personal info</p>
+          <button class="ghost" id="signIn" on:click={toggleRightPanel}
+            >Sign In</button
+          >
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <button class="ghost" id="signUp" on:click={toggleRightPanel}
+            >Sign Up</button
+          >
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <style>
+  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
-.wrapped {
-  position: relative;
-  height: 100vh;
-  width: 100%;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-.wrapped::before {
-  content: "before";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url(/CodingMagic-3.jpg);
-  background-size: cover;
-  background-position: center;
-}
+  .Container-Body {
+    background-image: url(/CodingMagic-1.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    margin: -20px 0 50px;
+  }
 
-.login-box {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  padding: 40px;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,.7);
-  box-sizing: border-box;
-  box-shadow: 0 15px 25px rgba(0,0,0,.6);
-  border-radius: 10px;
-  font-family: "Quicksand", sans-serif;
-  z-index: 100;
-}
+  h1 {
+    font-weight: bold;
+    margin: 0;
+  }
 
-.login-box h2 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-}
+  p {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+  }
 
-.user-box {
-  position: relative;
-}
+  span {
+    font-size: 12px;
+  }
 
-.user-box input {
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 30px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
-}
-.user-box label {
-  position: absolute;
-  top:0;
-  left: 0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  pointer-events: none;
-  transition: .5s;
-}
-
-.user-box input:focus ~ label,
-.user-box input:valid ~ label {
-  top: -20px;
-  left: 0;
-  color: #03e9f4;
-  font-size: 12px;
-}
-
-.signup-link{
-  color: #03e9f4;
+  a {
+    color: #333;
+    font-size: 14px;
     text-decoration: none;
+    margin: 15px 0;
+  }
+
+  button {
+    border-radius: 20px;
+    border: 1px solid;
+    background-color: #af07d9;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    transition: transform 80ms ease-in;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  button.ghost {
+    background-color: transparent;
+    border-color: #ffffff;
+  }
+
+  form {
+    background-color:#ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    text-align: center;
+  }
+
+  input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+  }
+
+  .container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.25),
+      0 10px 10px rgba(0, 0, 0, 0.22);
+    position: relative;
     overflow: hidden;
-    transition:.5s;
-    letter-spacing: 1.2px;
-}
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+  }
 
-.signup-link:hover{
-  background: #03e9f4;
-    color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 5px #03e9f4,
-                0 0 25px #03e9f4;
-}
+  .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+  }
 
-form .submit{
-  position: relative;
-  display: inline-block;
-  padding: 10px 20px;
-  color: #03e9f4;
-  font-size: 16px;
-  text-decoration: none;
-  text-transform: uppercase;
-  overflow: hidden;
-  transition: .5s;
-  margin-top: 40px;
-  letter-spacing: 4px
-}
+  .sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
 
-.login-box .submit:hover {
-  background: #03e9f4;
-  color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 5px #03e9f4,
-              0 0 25px #03e9f4,
-              0 0 50px #03e9f4,
-              0 0 100px #03e9f4;
-}
+  .container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+  }
 
-.login-box .submit span {
-  position: absolute;
-  display: block;
-}
+  .sign-up-container {  
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+  }
 
-.login-box .submit span:nth-child(1) {
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #03e9f4);
-  animation: btn-anim1 1s linear infinite;
-}
+  .container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+  }
 
-@keyframes btn-anim1 {
-  0% {
+  @keyframes show {
+    0%,
+    49.99% {
+      opacity: 0;
+      z-index: 1;
+    }
+
+    50%,
+    100% {
+      opacity: 1;
+      z-index: 5;
+    }
+  }
+
+  .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+  }
+
+  .container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+  }
+
+  .overlay {
+    background: #c641ff;
+    background: -webkit-linear-gradient(to right, #6604d6, #c641ff);
+    background: linear-gradient(to right, #6604d6, #c641ff);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #ffffff;
+    position: relative;
     left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
   }
-  50%,100% {
-    left: 100%;
-  }
-}
 
-.login-box .submit span:nth-child(2) {
-  top: -100%;
-  right: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(180deg, transparent, #03e9f4);
-  animation: btn-anim2 1s linear infinite;
-  animation-delay: .25s
-}
-
-@keyframes btn-anim2 {
-  0% {
-    top: -100%;
+  .container.right-panel-active .overlay {
+    transform: translateX(50%);
   }
-  50%,100% {
-    top: 100%;
-  }
-}
 
-.login-box .submit span:nth-child(3) {
-  bottom: 0;
-  right: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(270deg, transparent, #03e9f4);
-  animation: btn-anim3 1s linear infinite;
-  animation-delay: .5s
-}
-
-@keyframes btn-anim3 {
-  0% {
-    right: -100%;
+  .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
   }
-  50%,100% {
-    right: 100%;
-  }
-}
 
-.login-box .submit span:nth-child(4) {
-  bottom: -100%;
-  left: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(360deg, transparent, #03e9f4);
-  animation: btn-anim4 1s linear infinite;
-  animation-delay: .75s
-}
-
-@keyframes btn-anim4 {
-  0% {
-    bottom: -100%;
+  .overlay-left {
+    transform: translateX(-20%);
   }
-  50%,100% {
-    bottom: 100%;
-  }
-}
 
+  .container.right-panel-active .overlay-left {
+    transform: translateX(0);
+  }
+
+  .overlay-right {
+    right: 0;
+    transform: translateX(0);
+  }
+
+  .container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+  }
+
+  .social-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .social-container a {
+    fill: #af07d9;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    height: 40px;
+    width: 40px;
+  }
+
+  footer {
+    background-color: #222;
+    color: #fff;
+    font-size: 14px;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 999;
+  }
+
+  footer p {
+    margin: 10px 0;
+  }
+
+  footer i {
+    color: red;
+  }
+
+  footer a {
+    color: #3c97bf;
+    text-decoration: none;
+  }
 </style>
