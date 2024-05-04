@@ -8,6 +8,7 @@
   import GitHub from "$lib/Icons/GitHub.svelte";
   import Discord from "$lib/Icons/Discord.svelte";
   import Google from "$lib/Icons/Google.svelte";
+  import MagicStar from "$lib/Icons/MagicStar.svelte";
 
   const supabaseUrl = PUBLIC_SUPABASE_URL;
   const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
@@ -17,6 +18,32 @@
   let email = "";
   let password = "";
   let isRightPanelActive = true;
+
+  let index = 0,
+    interval = 1000;
+
+  const rand = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
+
+  const animate = (star: any) => {
+    star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
+    star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
+
+    star.style.animation = "none";
+    star.offsetHeight;
+    star.style.animation = "";
+  };
+
+  for (const star of document.getElementsByClassName("magic-star")) {
+    setTimeout(
+      () => {
+        animate(star);
+
+        setInterval(() => animate(star), 1000);
+      },
+      index++ * (interval / 3)
+    );
+  }
 
   function toggleRightPanel() {
     isRightPanelActive = !isRightPanelActive;
@@ -41,33 +68,12 @@
         <input type="email" placeholder="Email" />
         <input type="password" placeholder="Password" />
         <button>Sign Up</button>
-        <h1>
+        <h2>
           Create an account with a
           <span class="magic">
-            <span class="magic-star">
-              <svg viewBox="0 0 512 512">
-                <path
-                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-                />
-              </svg>
-            </span>
-            <span class="magic-star">
-              <svg viewBox="0 0 512 512">
-                <path
-                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-                />
-              </svg>
-            </span>
-            <span class="magic-star">
-              <svg viewBox="0 0 512 512">
-                <path
-                  d="M512 255.1c0 11.34-7.406 20.86-18.44 23.64l-171.3 42.78l-42.78 171.1C276.7 504.6 267.2 512 255.9 512s-20.84-7.406-23.62-18.44l-42.66-171.2L18.47 279.6C7.406 276.8 0 267.3 0 255.1c0-11.34 7.406-20.83 18.44-23.61l171.2-42.78l42.78-171.1C235.2 7.406 244.7 0 256 0s20.84 7.406 23.62 18.44l42.78 171.2l171.2 42.78C504.6 235.2 512 244.6 512 255.1z"
-                />
-              </svg>
-            </span>
-            <span class="magic-text">Magic Link!</span>
+            <h3 class="magic-text"><a href="">Magic Link!</a></h3>
           </span>
-        </h1>
+        </h2>
       </form>
     </div>
     <div class="form-container sign-in-container">
@@ -79,8 +85,8 @@
           <a href="#" class="social"><Google /></a>
         </div>
         <span>or use your account</span>
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+        <input type="email" placeholder="Email" bind:value={email} />
+        <input type="password" placeholder="Password" bind:value={password} />
         <a href="#">Forgot your password?</a>
         <button>Sign In</button>
       </form>
@@ -100,6 +106,12 @@
           <button class="ghost" id="signUp" on:click={toggleRightPanel}
             >Sign Up</button
           >
+          <h2>
+            Create an account with a
+            <span class="magic">
+              <h3 class="magic-text"><a href="">Magic Link!</a></h3>
+            </span>
+          </h2>
         </div>
       </div>
     </div>
@@ -114,14 +126,13 @@
   }
 
   .Container-Body {
-    background-image: url(/CodingMagic-1.jpg);
+    background-image: url(/CodingMagic-3.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     justify-content: center;
     display: flex;
     align-items: center;
     height: 100vh;
-    margin: -20px 0 50px;
   }
 
   h1 {
@@ -129,49 +140,85 @@
     margin: 0;
   }
 
-  h1 > .magic {
-  display: inline-block;
-  position: relative;
-}
+  :root {
+    --purple: rgb(123, 31, 162);
+    --violet: rgb(103, 58, 183);
+    --pink: rgb(244, 143, 177);
+  }
 
-h1 > .magic > .magic-star {
-  --size: clamp(20px, 1.5vw, 30px);
-  
-  animation: scale 700ms ease forwards;
-  display: block;
-  height: var(--size);
-  left: var(--star-left);
-  position: absolute;
-  top: var(--star-top);
-  width: var(--size);
-}
+  @keyframes background-pan {
+    from {
+      background-position: 0% center;
+    }
 
-h1 > .magic > .magic-star > svg {
-  animation: rotate 1000ms linear infinite;
-  display: block;
-  opacity: 0.7;
-}
+    to {
+      background-position: -200% center;
+    }
+  }
 
-h1 > .magic > .magic-star > svg > path {
-  fill: var(--violet);
-}
+  @keyframes scale {
+    from,
+    to {
+      transform: scale(0);
+    }
 
-h1 > .magic > .magic-text {
-  animation: background-pan 3s linear infinite;
-  background: linear-gradient(
-    to right,
-    var(--purple),
-    var(--violet),
-    var(--pink),
-    var(--purple)
-  );
-  background-size: 200%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  white-space: nowrap;
-}
+    50% {
+      transform: scale(1);
+    }
+  }
 
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(180deg);
+    }
+  }
+
+  h2 > .magic {
+    display: inline-block;
+    position: relative;
+  }
+
+  h2 > .magic > .magic-star {
+    --size: clamp(20px, 1.5vw, 30px);
+
+    animation: scale 700ms ease forwards;
+    display: block;
+    height: var(--size);
+    left: var(--star-left);
+    position: absolute;
+    top: var(--star-top);
+    width: var(--size);
+  }
+
+  h2 > .magic > .magic-star > svg {
+    animation: rotate 1000ms linear infinite;
+    display: block;
+    opacity: 0.7;
+  }
+
+  h2 > .magic > .magic-star > svg > path {
+    fill: var(--violet);
+  }
+
+  h2 > .magic > .magic-text {
+    animation: background-pan 3s linear infinite;
+    background: linear-gradient(
+      to right,
+      var(--purple),
+      var(--violet),
+      var(--pink),
+      var(--purple)
+    );
+    background-size: 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+  }
 
   p {
     font-size: 14px;
