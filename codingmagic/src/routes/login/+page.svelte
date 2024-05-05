@@ -4,11 +4,8 @@
     PUBLIC_SUPABASE_URL,
   } from "$env/static/public";
   import { createClient } from "@supabase/supabase-js";
-  import { onMount } from "svelte";
-  import GitHub from "$lib/Icons/GitHub.svelte";
-  import Discord from "$lib/Icons/Discord.svelte";
-  import Google from "$lib/Icons/Google.svelte";
-  import MagicStar from "$lib/Icons/MagicStar.svelte";
+  import SocialContainer from "$lib/Components/SocialContainer.svelte";
+  import BackArrow from "$lib/Icons/BackArrow.svelte";
 
   const supabaseUrl = PUBLIC_SUPABASE_URL;
   const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
@@ -18,35 +15,47 @@
   let email = "";
   let password = "";
   let isRightPanelActive = true;
+  let isMagicLinkPagSignUpActive = false;
+  let isMagicLinkPagSignInActive = false;
 
-  let index = 0,
-    interval = 1000;
+  // let index = 0,
+  //   interval = 1000;
 
-  const rand = (min: number, max: number) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
+  // const rand = (min: number, max: number) =>
+  //   Math.floor(Math.random() * (max - min + 1)) + min;
 
-  const animate = (star: any) => {
-    star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
-    star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
+  // const animate = (star: any) => {
+  //   star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
+  //   star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
 
-    star.style.animation = "none";
-    star.offsetHeight;
-    star.style.animation = "";
-  };
+  //   star.style.animation = "none";
+  //   star.offsetHeight;
+  //   star.style.animation = "";
+  // };
 
-  for (const star of document.getElementsByClassName("magic-star")) {
-    setTimeout(
-      () => {
-        animate(star);
+  // for (const star of document.getElementsByClassName("magic-star")) {
+  //   setTimeout(
+  //     () => {
+  //       animate(star);
 
-        setInterval(() => animate(star), 1000);
-      },
-      index++ * (interval / 3)
-    );
-  }
+  //       setInterval(() => animate(star), 1000);
+  //     },
+  //     index++ * (interval / 3)
+  //   );
+  // }
 
   function toggleRightPanel() {
     isRightPanelActive = !isRightPanelActive;
+    isMagicLinkPagSignUpActive = false;
+    isMagicLinkPagSignInActive = false;
+  }
+
+  function toggleMagicLinkSignUpPage() {
+    isMagicLinkPagSignUpActive = true;
+  }
+
+  function toggleMagicLinkSignInPage() {
+    isMagicLinkPagSignInActive = true;
   }
 </script>
 
@@ -55,63 +64,87 @@
     class={isRightPanelActive ? "container" : "container right-panel-active"}
     id="container"
   >
-    <div class="form-container sign-up-container">
-      <form action="#">
-        <h1>Create Account</h1>
-        <div class="social-container">
-          <a href="#" class="social"><GitHub /></a>
-          <a href="#" class="social"><Discord /></a>
-          <a href="#" class="social"><Google /></a>
-        </div>
-        <span>or use your email for registration</span>
-        <input type="text" placeholder="Username" />
-        <input type="email" placeholder="Email" />
-        <input type="password" placeholder="Password" />
-        <button>Sign Up</button>
-        <h2>
-          Create an account with a
-          <span class="magic">
-            <h3 class="magic-text"><a href="">Magic Link!</a></h3>
-          </span>
-        </h2>
-      </form>
-    </div>
-    <div class="form-container sign-in-container">
-      <form action="#">
-        <h1>Sign in</h1>
-        <div class="social-container">
-          <a href="#" class="social"><GitHub /></a>
-          <a href="#" class="social"><Discord /></a>
-          <a href="#" class="social"><Google /></a>
-        </div>
-        <span>or use your account</span>
-        <input type="email" placeholder="Email" bind:value={email} />
-        <input type="password" placeholder="Password" bind:value={password} />
-        <a href="#">Forgot your password?</a>
-        <button>Sign In</button>
-      </form>
-    </div>
+    {#if !isMagicLinkPagSignUpActive}
+      <div class="form-container sign-up-container">
+        <form action="#">
+          <h1>Create Account</h1>
+          <SocialContainer />
+          <span>or use your email for registration</span>
+          <input type="text" placeholder="Username" />
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <button>Sign Up</button>
+          <h2>
+            Create an account with a
+            <span class="magic">
+              <h3 class="magic-text">
+                <a href="" on:click={toggleMagicLinkSignUpPage}>Magic Link!</a>
+              </h3>
+            </span>
+          </h2>
+        </form>
+      </div>
+      <div class="form-container sign-in-container">
+        <form action="#">
+          <h1>Sign in</h1>
+          <SocialContainer />
+          <span>or use your account</span>
+          <input type="email" placeholder="Email" bind:value={email} />
+          <input type="password" placeholder="Password" bind:value={password} />
+          <a href="#">Forgot your password?</a>
+          <button>Sign In</button>
+        </form>
+      </div>
+    {/if}
+    {#if isMagicLinkPagSignUpActive || isMagicLinkPagSignInActive}
+      <div
+        class={isMagicLinkPagSignInActive
+          ? "form-container sign-in-container"
+          : "form-container sign-up-container"}
+      >
+        <form action="#">
+          <h2>
+            <span class="magic">
+              <h1 class="magic-text">Magic Link!</h1>
+            </span>
+          </h2>
+          <SocialContainer />
+          <span style="padding-bottom: 4vh;"
+            >or use your email for registration</span
+          >
+          <input type="email" placeholder="Email" bind:value={email} />
+          <span style="padding-top: 4vh;"></span>
+          <button>Send Email</button>
+        </form>
+      </div>
+    {/if}
     <div class="overlay-container">
       <div class="overlay">
         <div class="overlay-panel overlay-left">
           <h1>Welcome Back!</h1>
-          <p>To keep connected with us please login with your personal info</p>
+          <p>To keep connected with us please login with your info</p>
           <button class="ghost" id="signIn" on:click={toggleRightPanel}
             >Sign In</button
           >
         </div>
         <div class="overlay-panel overlay-right">
           <h1>Hello, Friend!</h1>
-          <p>Enter your personal details and start journey with us</p>
+          <p>Enter your details and start journey with us</p>
           <button class="ghost" id="signUp" on:click={toggleRightPanel}
             >Sign Up</button
           >
-          <h2>
-            Create an account with a
-            <span class="magic">
-              <h3 class="magic-text"><a href="">Magic Link!</a></h3>
-            </span>
-          </h2>
+          {#if !isMagicLinkPagSignInActive}
+            <h2 style="padding-top: 2vh">
+              Create an account or Login with a
+              <span class="magic">
+                <h3 class="magic-text">
+                  <a href="" on:click={toggleMagicLinkSignInPage}>Magic Link!</a
+                  >
+                </h3>
+              </span>
+            </h2>
+          {/if}
+          
         </div>
       </div>
     </div>
@@ -411,23 +444,5 @@
 
   .container.right-panel-active .overlay-right {
     transform: translateX(20%);
-  }
-
-  .social-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-  }
-
-  .social-container a {
-    fill: #af07d9;
-    border-radius: 50%;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 5px;
-    height: 40px;
-    width: 40px;
   }
 </style>
