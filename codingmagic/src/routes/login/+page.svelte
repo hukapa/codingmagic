@@ -11,7 +11,7 @@
   const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  let user: any;
+  let user: "";
   let email = "";
   let password = "";
   let isRightPanelActive = true;
@@ -54,6 +54,13 @@
     });
   }
 
+  async function signUpAuth() {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+  }
+
   async function signOut() {
     const { error } = await supabase.auth.signOut();
   }
@@ -75,13 +82,13 @@
   >
     {#if !isMagicLinkPagSignInActive}
       <div class="form-container sign-up-container">
-        <form action="#">
+        <form action="#"  on:submit|preventDefault={signUpAuth}>
           <h1>Create Account</h1>
           <SocialContainer />
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Username" />
-          <input type="email" placeholder="Email" />
-          <input type="password" placeholder="Password" />
+          <input type="text" placeholder="Username" bind:value={user}/>
+          <input type="email" placeholder="Email" bind:value={email}/>
+          <input type="password" placeholder="Password" bind:value={password}/>
           <button type="submit">Sign Up</button>
         </form>
       </div>
