@@ -15,7 +15,6 @@
   let email = "";
   let password = "";
   let isRightPanelActive = true;
-  let isMagicLinkPagSignUpActive = false;
   let isMagicLinkPagSignInActive = false;
 
   // let index = 0,
@@ -44,14 +43,24 @@
   //   );
   // }
 
-  function toggleRightPanel() {
-    isRightPanelActive = !isRightPanelActive;
-    isMagicLinkPagSignUpActive = false;
-    isMagicLinkPagSignInActive = false;
+  async function signInWithEmail() {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        // set this to false if you do not want the user to be automatically signed up
+        shouldCreateUser: false,
+        emailRedirectTo: "http://localhost:5173/dashboard",
+      },
+    });
   }
 
-  function toggleMagicLinkSignUpPage() {
-    isMagicLinkPagSignUpActive = true;
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+  }
+
+  function toggleRightPanel() {
+    isRightPanelActive = !isRightPanelActive;
+    isMagicLinkPagSignInActive = false;
   }
 
   function toggleMagicLinkSignInPage() {
@@ -64,7 +73,7 @@
     class={isRightPanelActive ? "container" : "container right-panel-active"}
     id="container"
   >
-    {#if !isMagicLinkPagSignUpActive}
+    {#if !isMagicLinkPagSignInActive}
       <div class="form-container sign-up-container">
         <form action="#">
           <h1>Create Account</h1>
@@ -73,15 +82,7 @@
           <input type="text" placeholder="Username" />
           <input type="email" placeholder="Email" />
           <input type="password" placeholder="Password" />
-          <button>Sign Up</button>
-          <h2>
-            Create an account with a
-            <span class="magic">
-              <h3 class="magic-text">
-                <a href="" on:click={toggleMagicLinkSignUpPage}>Magic Link!</a>
-              </h3>
-            </span>
-          </h2>
+          <button type="submit">Sign Up</button>
         </form>
       </div>
       <div class="form-container sign-in-container">
@@ -92,17 +93,17 @@
           <input type="email" placeholder="Email" bind:value={email} />
           <input type="password" placeholder="Password" bind:value={password} />
           <a href="#">Forgot your password?</a>
-          <button>Sign In</button>
+          <button type="submit">Sign In</button>
         </form>
       </div>
     {/if}
-    {#if isMagicLinkPagSignUpActive || isMagicLinkPagSignInActive}
+    {#if isMagicLinkPagSignInActive}
       <div
         class={isMagicLinkPagSignInActive
           ? "form-container sign-in-container"
           : "form-container sign-up-container"}
       >
-        <form action="#">
+        <form action="#" on:submit|preventDefault={signInWithEmail}>
           <h2>
             <span class="magic">
               <h1 class="magic-text">Magic Link!</h1>
@@ -114,7 +115,7 @@
           >
           <input type="email" placeholder="Email" bind:value={email} />
           <span style="padding-top: 4vh;"></span>
-          <button>Send Email</button>
+          <button type="submit">Send Email</button>
         </form>
       </div>
     {/if}
@@ -135,7 +136,7 @@
           >
           {#if !isMagicLinkPagSignInActive}
             <h2 style="padding-top: 2vh">
-              Create an account or Login with a
+              Login with a
               <span class="magic">
                 <h3 class="magic-text">
                   <a href="" on:click={toggleMagicLinkSignInPage}>Magic Link!</a
@@ -144,7 +145,6 @@
               </span>
             </h2>
           {/if}
-          
         </div>
       </div>
     </div>
