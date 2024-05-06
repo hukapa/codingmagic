@@ -16,34 +16,15 @@
   let password = "";
   let isRightPanelActive = true;
   let isMagicLinkPagSignInActive = false;
+  let signUpError = "";
 
-  // let index = 0,
-  //   interval = 1000;
-
-  // const rand = (min: number, max: number) =>
-  //   Math.floor(Math.random() * (max - min + 1)) + min;
-
-  // const animate = (star: any) => {
-  //   star.style.setProperty("--star-left", `${rand(-10, 100)}%`);
-  //   star.style.setProperty("--star-top", `${rand(-40, 80)}%`);
-
-  //   star.style.animation = "none";
-  //   star.offsetHeight;
-  //   star.style.animation = "";
-  // };
-
-  // for (const star of document.getElementsByClassName("magic-star")) {
-  //   setTimeout(
-  //     () => {
-  //       animate(star);
-
-  //       setInterval(() => animate(star), 1000);
-  //     },
-  //     index++ * (interval / 3)
-  //   );
-  // }
-
+  // Sign In With Email Function
   async function signInWithEmail() {
+    if (!isValidEmail(email)) {
+      console.error("Invalid email address");
+      return;
+    }
+
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -52,17 +33,110 @@
         emailRedirectTo: "http://localhost:5173/dashboard",
       },
     });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+    if (data) {
+      console.log("Email sent!");
+      // Redirect the user to the dashboard or another page
+    }
   }
 
+  // Sign Up Auth Function
   async function signUpAuth() {
+    if (!isValidEmail(email)) {
+      signUpError = "Invalid email address";
+      console.error(signUpError);
+
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      signUpError = "Invalid password. Must be at least 6 characters long";
+
+      console.error(signUpError);
+      return;
+    }
+
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: email,
+      password: password,
     });
+
+    if (error) {
+      console.error(error);
+      signUpError = error.message;
+      return;
+    }
+
+    if (data) {
+      console.log("Sign-up successful!");
+      // Redirect the user to the dashboard or another page
+      window.location.href = "http://localhost:5173/dashboard";
+    }
   }
 
+  // Sign in with email and password
+  async function signInAuth() {
+    if (!isValidEmail(email)) {
+      console.error("Invalid email address");
+      return;
+    }
+
+    if (!password) {
+      console.error("Please enter a password");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (data) {
+      console.log("Sign-in successful!");
+      // Redirect the user to the dashboard or another page
+      window.location.href = "http://localhost:5173/dashboard";
+    }
+  }
+
+  // Sign Out Function
   async function signOut() {
     const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error);
+      return;
+    }
+    // Redirect the user to the sign-in page
+    window.location.href = "http://localhost:5173/login";
+    console.log("Sign-out successful!");
+  }
+
+  //Form Validations
+  function isValidPassword(password: string): boolean {
+  const requirements = [
+    { name: "length", valid: password.length >= 8 },
+    { name: "lowercase", valid: /[a-z]/.test(password) },
+    { name: "uppercase", valid: /[A-Z]/.test(password) },
+    { name: "number", valid: /\d/.test(password) },
+    { name: "special", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
+  ];
+
+  const validRequirements = requirements.filter((req) => req.valid).length;
+
+  return validRequirements === requirements.length;
+}
+
+  function isValidEmail(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   }
 
   function toggleRightPanel() {
@@ -81,36 +155,71 @@
     id="container"
   >
     {#if !isMagicLinkPagSignInActive}
+      <!-- Sign Up Form -->
       <div class="form-container sign-up-container">
-        <form action="#"  on:submit|preventDefault={signUpAuth}>
+        <form id="signUpForm" on:submit|preventDefault={signUpAuth}>
           <h1>Create Account</h1>
           <SocialContainer />
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Username" bind:value={user}/>
-          <input type="email" placeholder="Email" bind:value={email}/>
-          <input type="password" placeholder="Password" bind:value={password}/>
+          <input type="text" placeholder="Username" required bind:value={user} />
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            bind:value={email}
+            id="emailSignUp"
+            name="email"
+            autocomplete="email"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            bind:value={password}
+          />
+          {#if signUpError}
+          <p style="all: unset; color: red; padding-bottom: 5px;">{signUpError}</p>
+          {/if}
           <button type="submit">Sign Up</button>
         </form>
       </div>
+      <!-- Sign In Form -->
       <div class="form-container sign-in-container">
-        <form action="#">
+        <form id="signInForm" on:submit|preventDefault={signInAuth}>
           <h1>Sign in</h1>
           <SocialContainer />
           <span>or use your account</span>
-          <input type="email" placeholder="Email" bind:value={email} />
-          <input type="password" placeholder="Password" bind:value={password} />
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            bind:value={email}
+            id="emailSignIn"
+            name="email"
+            autocomplete="email"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            bind:value={password}
+          />
           <a href="#">Forgot your password?</a>
           <button type="submit">Sign In</button>
         </form>
       </div>
     {/if}
     {#if isMagicLinkPagSignInActive}
+      <!-- Sign With Email Form -->
       <div
         class={isMagicLinkPagSignInActive
           ? "form-container sign-in-container"
           : "form-container sign-up-container"}
       >
-        <form action="#" on:submit|preventDefault={signInWithEmail}>
+        <form
+          id="signInWithEmailForm"
+          on:submit|preventDefault={signInWithEmail}
+        >
           <h2>
             <span class="magic">
               <h1 class="magic-text">Magic Link!</h1>
@@ -120,7 +229,15 @@
           <span style="padding-bottom: 4vh;"
             >or use your email for registration</span
           >
-          <input type="email" placeholder="Email" bind:value={email} />
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            bind:value={email}
+            id="emailMagicLink"
+            name="email"
+            autocomplete="email"
+          />
           <span style="padding-top: 4vh;"></span>
           <button type="submit">Send Email</button>
         </form>
@@ -220,28 +337,6 @@
   h2 > .magic {
     display: inline-block;
     position: relative;
-  }
-
-  h2 > .magic > .magic-star {
-    --size: clamp(20px, 1.5vw, 30px);
-
-    animation: scale 700ms ease forwards;
-    display: block;
-    height: var(--size);
-    left: var(--star-left);
-    position: absolute;
-    top: var(--star-top);
-    width: var(--size);
-  }
-
-  h2 > .magic > .magic-star > svg {
-    animation: rotate 1000ms linear infinite;
-    display: block;
-    opacity: 0.7;
-  }
-
-  h2 > .magic > .magic-star > svg > path {
-    fill: var(--violet);
   }
 
   h2 > .magic > .magic-text {
