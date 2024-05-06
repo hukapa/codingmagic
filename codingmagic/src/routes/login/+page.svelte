@@ -5,13 +5,12 @@
   } from "$env/static/public";
   import { createClient } from "@supabase/supabase-js";
   import SocialContainer from "$lib/Components/SocialContainer.svelte";
-  import BackArrow from "$lib/Icons/BackArrow.svelte";
 
   const supabaseUrl = PUBLIC_SUPABASE_URL;
   const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  let user: "";
+  let username: "";
   let email = "";
   let password = "";
   let isRightPanelActive = true;
@@ -20,11 +19,12 @@
 
   // Sign In With Email Function
   async function signInWithEmail() {
-    if (!isValidEmail(email)) {
-      console.error("Invalid email address");
-      return;
-    }
+  if (!isValidEmail(email)) {
+    console.error("Invalid email address");
+    return;
+  }
 
+  try {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
@@ -36,47 +36,63 @@
 
     if (error) {
       console.error(error);
-      return;
-    }
-    if (data) {
-      console.log("Email sent!");
-      // Redirect the user to the dashboard or another page
-    }
-  }
-
-  // Sign Up Auth Function
-  async function signUpAuth() {
-    if (!isValidEmail(email)) {
-      signUpError = "Invalid email address";
-      console.error(signUpError);
-
-      return;
-    }
-
-    if (!isValidPassword(password)) {
-      signUpError = "Invalid password. Must be at least 6 characters long";
-
-      console.error(signUpError);
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) {
-      console.error(error);
       signUpError = error.message;
       return;
     }
 
     if (data) {
-      console.log("Sign-up successful!");
+      console.log("Email sent!");
       // Redirect the user to the dashboard or another page
       window.location.href = "http://localhost:5173/dashboard";
     }
+  } catch (error) {
+  const errorAsError = error as Error;
+  console.error(errorAsError);
+  signUpError = errorAsError.message;
+}
+}
+
+  // Sign Up Auth Function
+  async function signUpAuth() {
+  if (!isValidEmail(email)) {
+    signUpError = "Invalid email address";
+    console.error(signUpError);
+    return;
   }
+
+  if (!isValidPassword(password)) {
+    signUpError = "Must start with a Capital letter and be at least 6 characters long";
+    console.error(signUpError);
+    return;
+  }
+
+  if (!isValidUsername(username)) {
+    signUpError = "Invalid username. Must be between 3 and 20 characters long.";
+    console.error(signUpError);
+    return;
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+  });
+
+  if (error) {
+    console.error(error);
+    signUpError = error.message;
+    return;
+  }
+
+  if (data) {
+    const userAccount = await createUserAccount(username);
+    if (userAccount) {
+      console.log("User account created successfully!");
+    } else {
+      console.error("Failed to create user account");
+    }
+    window.location.href = "http://localhost:5173/confirm-email";
+  }
+}
 
   // Sign in with email and password
   async function signInAuth() {
@@ -119,21 +135,29 @@
     console.log("Sign-out successful!");
   }
 
-  //Form Validations
-  function isValidPassword(password: string): boolean {
-  const requirements = [
-    { name: "length", valid: password.length >= 8 },
-    { name: "lowercase", valid: /[a-z]/.test(password) },
-    { name: "uppercase", valid: /[A-Z]/.test(password) },
-    { name: "number", valid: /\d/.test(password) },
-    { name: "special", valid: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
-  ];
+  async function createUserAccount(username: string) {
+  const { data, error } = await supabase
+    .from('user_accounts')
+    .insert({ username });
 
-  const validRequirements = requirements.filter((req) => req.valid).length;
+  if (error) {
+    console.error(error);
+    return null;
+  }
 
-  return validRequirements === requirements.length;
+  return data;
 }
 
+  //Form Validations
+
+  function isValidUsername(username: string): boolean {
+  return username.length >= 3 && username.length <= 20;
+}
+
+  function isValidPassword(password: string): boolean {
+    const regex = /^[A-Z].{6,}$/;
+    return regex.test(password);
+}
   function isValidEmail(email: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -161,7 +185,7 @@
           <h1>Create Account</h1>
           <SocialContainer />
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Username" required bind:value={user} />
+          <input type="text" placeholder="Username" required bind:value={username} />
           <input
             type="email"
             placeholder="Email"
@@ -210,6 +234,7 @@
       </div>
     {/if}
     {#if isMagicLinkPagSignInActive}
+
       <!-- Sign With Email Form -->
       <div
         class={isMagicLinkPagSignInActive
