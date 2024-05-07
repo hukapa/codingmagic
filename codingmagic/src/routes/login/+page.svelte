@@ -89,7 +89,7 @@
     }
 
     if (data) {
-      const userAccount = await createUserAccount(username);
+      const userAccount = await createUserAccount(username, email);
       if (userAccount) {
         console.log("User account created successfully!");
       } else {
@@ -97,6 +97,20 @@
       }
       window.location.href = "http://localhost:5173/confirm-email";
     }
+  }
+
+  //Create user in the user_accounts table
+  async function createUserAccount(username: string, email: string) {
+    const { data, error } = await supabase
+      .from("user_accounts")
+      .insert({ username: username, user_email: email });
+
+    if (error) {
+      console.error(error);
+      return null;
+    }
+
+    return data;
   }
 
   // Sign in with email and password
@@ -133,6 +147,7 @@
       window.location.href = "http://localhost:5173/dashboard";
     }
   }
+
   // Sign Out Function
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -145,69 +160,57 @@
     console.log("Sign-out successful!");
   }
 
-  //Create user in the user_accounts table
-  async function createUserAccount(username: string) {
-    const { data, error } = await supabase
-      .from("user_accounts")
-      .insert({ username });
+  async function sendPasswordResetEmail() {
+    try {
+      // Check if the email address is valid
+      if (!isValidEmail(email)) {
+        console.error("Invalid email address");
+        resetPasswordError = "Invalid email address";
+        return;
+      }
 
-    if (error) {
-      console.error(error);
-      return null;
-    }
+      // Check if the email address exists in the Supabase database
+      const { data, error } = await supabase
+        .from("user_accounts")
+        .select("user_email")
+        .eq("user_email", email)
+        .single();
 
-    return data;
-  }
+      if (error) {
+        console.error(error);
+        resetPasswordError = "Failed to send password reset email";
+        return;
+      }
 
-  async function sendPasswordResetEmail(email: any) {
-  try {
-    // Check if the email address is valid
-    if (!isValidEmail(email)) {
-      console.error("Invalid email address");
-      resetPasswordError = "Invalid email address";
-      return;
-    }
+      if (!data) {
+        console.error("Email address not found");
+        resetPasswordError = "Email address not found";
+        return;
+      }
 
-    // Check if the email address exists in the Supabase database
-    const { data, error } = await supabase
-      .from("users")
-      .select("email")
-      .eq("email", email)
-      .single();
+      // Send the password reset email
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          // Specify the redirect URL
+          redirectTo: "https://localhost:5173/reset-password",
+        }
+      );
 
-    if (error) {
+      if (resetError) {
+        console.error(resetError);
+        // Display an error message to the user
+        resetPasswordError = "Failed to send password reset email";
+        return;
+      }
+
+      emailSentSuccessfully = "Password reset email sent";
+      console.log(emailSentSuccessfully);
+    } catch (error) {
       console.error(error);
       resetPasswordError = "Failed to send password reset email";
-      return;
     }
-
-    if (!data) {
-      console.error("Email address not found");
-      resetPasswordError = "Email address not found";
-      return;
-    }
-
-    // Send the password reset email
-    const { error: resetError } =
-      await supabase.auth.resetPasswordForEmail(email, {
-        // Specify the redirect URL
-        redirectTo: 'https://localhost:5173/reset-password',
-      });
-
-    if (resetError) {
-      console.error(resetError);
-      // Display an error message to the user
-      resetPasswordError = "Failed to send password reset email";
-      return;
-    }
-
-    emailSentSuccessfully = "Password reset email sent";
-    console.log(emailSentSuccessfully);
-  } catch (error) {
-    console.error(error);
-    resetPasswordError = "Failed to send password reset email";
   }
-}
 
   //Form Validations
 
@@ -325,7 +328,7 @@
           <h1>Reset Password</h1>
           <SocialContainer />
           <span style="padding-bottom: 4vh;"
-            >Enter Your Email To Reset Your Password</span
+            >Enter your email to reset your password</span
           >
           <input
             type="email"
@@ -375,7 +378,7 @@
           </h2>
           <SocialContainer />
           <span style="padding-bottom: 4vh;"
-            >Enter Your Email To Join Us As Fast As Possible!</span
+            >Enter your email to join us as fast as possible!</span
           >
           <input
             type="email"
