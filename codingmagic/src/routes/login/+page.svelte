@@ -13,25 +13,73 @@
   let username: "";
   let email = "";
   let password = "";
+  let signUpError = "";
+  let signInError = "";
+  let resetPasswordError = "";
+  let emailSentSuccessfully = "";
   let isRightPanelActive = true;
   let isMagicLinkPagSignInActive = false;
-  let signUpError = "";
+  let isForgotPasswordActive = false;
 
   // Sign In With Email Function
   async function signInWithEmail() {
-  if (!isValidEmail(email)) {
-    console.error("Invalid email address");
-    return;
+    if (!isValidEmail(email)) {
+      console.error("Invalid email address");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          // set this to false if you do not want the user to be automatically signed up
+          shouldCreateUser: false,
+          emailRedirectTo: "http://localhost:5173/dashboard",
+        },
+      });
+
+      if (error) {
+        console.error(error);
+        signUpError = error.message;
+        return;
+      }
+
+      if (data) {
+        console.log("Email sent");
+        // Redirect the user to the dashboard or another page
+        window.location.href = "http://localhost:5173/confirm-email";
+      }
+    } catch (error) {
+      const errorAsError = error as Error;
+      console.error(errorAsError);
+      signUpError = errorAsError.message;
+    }
   }
 
-  try {
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        // set this to false if you do not want the user to be automatically signed up
-        shouldCreateUser: false,
-        emailRedirectTo: "http://localhost:5173/dashboard",
-      },
+  // Sign Up Auth Function
+  async function signUpAuth() {
+    if (!isValidUsername(username)) {
+      signUpError =
+        "Invalid username. Must be between 3 and 20 characters long.";
+      console.error(signUpError);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      signUpError = "Invalid email address";
+      console.error(signUpError);
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      signUpError =
+        "Invalid Password. Must start with a Capital letter and be at least 6 characters long";
+      console.error(signUpError);
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
     });
 
     if (error) {
@@ -41,58 +89,15 @@
     }
 
     if (data) {
-      console.log("Email sent!");
-      // Redirect the user to the dashboard or another page
-      window.location.href = "http://localhost:5173/dashboard";
+      const userAccount = await createUserAccount(username);
+      if (userAccount) {
+        console.log("User account created successfully!");
+      } else {
+        console.error("Failed to create user account");
+      }
+      window.location.href = "http://localhost:5173/confirm-email";
     }
-  } catch (error) {
-  const errorAsError = error as Error;
-  console.error(errorAsError);
-  signUpError = errorAsError.message;
-}
-}
-
-  // Sign Up Auth Function
-  async function signUpAuth() {
-  if (!isValidEmail(email)) {
-    signUpError = "Invalid email address";
-    console.error(signUpError);
-    return;
   }
-
-  if (!isValidPassword(password)) {
-    signUpError = "Must start with a Capital letter and be at least 6 characters long";
-    console.error(signUpError);
-    return;
-  }
-
-  if (!isValidUsername(username)) {
-    signUpError = "Invalid username. Must be between 3 and 20 characters long.";
-    console.error(signUpError);
-    return;
-  }
-
-  const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-  });
-
-  if (error) {
-    console.error(error);
-    signUpError = error.message;
-    return;
-  }
-
-  if (data) {
-    const userAccount = await createUserAccount(username);
-    if (userAccount) {
-      console.log("User account created successfully!");
-    } else {
-      console.error("Failed to create user account");
-    }
-    window.location.href = "http://localhost:5173/confirm-email";
-  }
-}
 
   // Sign in with email and password
   async function signInAuth() {
@@ -112,7 +117,13 @@
     });
 
     if (error) {
-      console.error(error);
+      if (error.message === "Invalid email or password") {
+        signInError = "The provided email or password is incorrect";
+        console.error(signInError);
+      } else {
+        console.error(error);
+        signInError = error.message;
+      }
       return;
     }
 
@@ -122,7 +133,6 @@
       window.location.href = "http://localhost:5173/dashboard";
     }
   }
-
   // Sign Out Function
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -135,29 +145,80 @@
     console.log("Sign-out successful!");
   }
 
+  //Create user in the user_accounts table
   async function createUserAccount(username: string) {
-  const { data, error } = await supabase
-    .from('user_accounts')
-    .insert({ username });
+    const { data, error } = await supabase
+      .from("user_accounts")
+      .insert({ username });
 
-  if (error) {
-    console.error(error);
-    return null;
+    if (error) {
+      console.error(error);
+      return null;
+    }
+
+    return data;
   }
 
-  return data;
+  async function sendPasswordResetEmail(email: any) {
+  try {
+    // Check if the email address is valid
+    if (!isValidEmail(email)) {
+      console.error("Invalid email address");
+      resetPasswordError = "Invalid email address";
+      return;
+    }
+
+    // Check if the email address exists in the Supabase database
+    const { data, error } = await supabase
+      .from("users")
+      .select("email")
+      .eq("email", email)
+      .single();
+
+    if (error) {
+      console.error(error);
+      resetPasswordError = "Failed to send password reset email";
+      return;
+    }
+
+    if (!data) {
+      console.error("Email address not found");
+      resetPasswordError = "Email address not found";
+      return;
+    }
+
+    // Send the password reset email
+    const { error: resetError } =
+      await supabase.auth.resetPasswordForEmail(email, {
+        // Specify the redirect URL
+        redirectTo: 'https://localhost:5173/reset-password',
+      });
+
+    if (resetError) {
+      console.error(resetError);
+      // Display an error message to the user
+      resetPasswordError = "Failed to send password reset email";
+      return;
+    }
+
+    emailSentSuccessfully = "Password reset email sent";
+    console.log(emailSentSuccessfully);
+  } catch (error) {
+    console.error(error);
+    resetPasswordError = "Failed to send password reset email";
+  }
 }
 
   //Form Validations
 
   function isValidUsername(username: string): boolean {
-  return username.length >= 3 && username.length <= 20;
-}
+    return username.length >= 3 && username.length <= 20;
+  }
 
   function isValidPassword(password: string): boolean {
     const regex = /^[A-Z].{6,}$/;
     return regex.test(password);
-}
+  }
   function isValidEmail(email: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -170,6 +231,10 @@
 
   function toggleMagicLinkSignInPage() {
     isMagicLinkPagSignInActive = true;
+  }
+
+  function toggleForgotPassword() {
+    isForgotPasswordActive = true;
   }
 </script>
 
@@ -185,7 +250,12 @@
           <h1>Create Account</h1>
           <SocialContainer />
           <span>or use your email for registration</span>
-          <input type="text" placeholder="Username" required bind:value={username} />
+          <input
+            type="text"
+            placeholder="Username"
+            required
+            bind:value={username}
+          />
           <input
             type="email"
             placeholder="Email"
@@ -202,7 +272,9 @@
             bind:value={password}
           />
           {#if signUpError}
-          <p style="all: unset; color: red; padding-bottom: 5px;">{signUpError}</p>
+            <p style="all: unset; color: red; padding-bottom: 5px;">
+              {signUpError}
+            </p>
           {/if}
           <button type="submit">Sign Up</button>
         </form>
@@ -228,13 +300,64 @@
             required
             bind:value={password}
           />
-          <a href="#">Forgot your password?</a>
+          {#if signInError}
+            <p
+              style="all: unset; color: red; padding-bottom: 5px; font-weight: bold;"
+            >
+              {signInError}
+            </p>
+          {/if}
+
+          <!-- Reset Password -->
+          <a href="#" on:click={toggleForgotPassword}>Forgot your password?</a>
           <button type="submit">Sign In</button>
         </form>
       </div>
     {/if}
-    {#if isMagicLinkPagSignInActive}
 
+    {#if isForgotPasswordActive}
+      <!-- Forgot Password Form -->
+      <div class="form-container sign-in-container">
+        <form
+          id="resetPasswordForm"
+          on:submit|preventDefault={sendPasswordResetEmail}
+        >
+          <h1>Reset Password</h1>
+          <SocialContainer />
+          <span style="padding-bottom: 4vh;"
+            >Enter Your Email To Reset Your Password</span
+          >
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            bind:value={email}
+            id="resetPassword"
+            name="email"
+            autocomplete="email"
+          />
+          {#if resetPasswordError}
+            <p
+              style="all: unset; color: red; padding-bottom: 5px; font-weight: bold;"
+            >
+              {resetPasswordError}
+            </p>
+          {/if}
+          {#if emailSentSuccessfully}
+            <p
+              style="all: unset; color: Green; padding-bottom: 5px; font-weight: bold;"
+            >
+              {emailSentSuccessfully}
+            </p>
+          {/if}
+
+          <span style="padding-top: 4vh;"></span>
+          <button type="submit">Reset Password</button>
+        </form>
+      </div>
+    {/if}
+
+    {#if isMagicLinkPagSignInActive}
       <!-- Sign With Email Form -->
       <div
         class={isMagicLinkPagSignInActive
@@ -252,7 +375,7 @@
           </h2>
           <SocialContainer />
           <span style="padding-bottom: 4vh;"
-            >or use your email for registration</span
+            >Enter Your Email To Join Us As Fast As Possible!</span
           >
           <input
             type="email"
@@ -278,21 +401,32 @@
           >
         </div>
         <div class="overlay-panel overlay-right">
-          <h1>Hello, Friend!</h1>
-          <p>Enter your details and start journey with us</p>
+          {#if isMagicLinkPagSignInActive}
+            <h1>Magic Link</h1>
+            <p>
+              With Magic Link you can start your journy secure and much faster!
+            </p>
+          {:else}
+            <h1>Hello, Friend!</h1>
+            <p>Enter your details and start journey with us</p>
+          {/if}
+          <p>Still don't have an account?</p>
           <button class="ghost" id="signUp" on:click={toggleRightPanel}
             >Sign Up</button
           >
           {#if !isMagicLinkPagSignInActive}
-            <h2 style="padding-top: 2vh">
-              Login with a
-              <span class="magic">
-                <h3 class="magic-text">
-                  <a href="" on:click={toggleMagicLinkSignInPage}>Magic Link!</a
-                  >
-                </h3>
-              </span>
-            </h2>
+            <div class="magicLink">
+              <h2>
+                Login with a
+                <span class="magic">
+                  <h3 class="magic-text">
+                    <a href="" on:click={toggleMagicLinkSignInPage}
+                      >Magic Link!</a
+                    >
+                  </h3>
+                </span>
+              </h2>
+            </div>
           {/if}
         </div>
       </div>
@@ -441,8 +575,8 @@
   }
 
   input {
-    background-color: #eee;
-    border: none;
+    background-color: #fff;
+    border: 1px;
     padding: 12px 15px;
     margin: 8px 0;
     width: 100%;
