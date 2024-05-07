@@ -99,6 +99,7 @@
     }
   }
 
+  
   //Create user in the user_accounts table
   async function createUserAccount(username: string, email: string) {
     const { data, error } = await supabase
