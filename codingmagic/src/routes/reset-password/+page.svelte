@@ -61,55 +61,57 @@
 </script>
 
 <!-- svelte-ignore a11y-no-redundant-roles -->
-<header role="banner">
-  <div id="cd-logo">
-    <a href="/">
-      <h1 style="font-size: large; color:white">CodingMagic</h1>
-    </a>
-  </div>
-
-  <nav class="main-nav">
-    <ul>
-      <!-- inser more links here -->
-      <li><a class="cd-signin" href="/login">Back to Login</a></li>
-    </ul>
-  </nav>
-</header>
-<div class="form-wrapper">
-  <div class="form-container">
-    <h1 style="font-weight: bold; font-size: 24px;">Reset Password</h1>
-    <form on:submit|preventDefault>
-      <div class="form-container">
-        <div class="form-control">
-          <input
-            id="newPassword"
-            type="password"
-            placeholder="New Password"
-            bind:value={newPassword}
-            required
-          />
+<div class="wrapper">
+  <header role="banner">
+    <div id="cd-logo">
+      <a href="/">
+        <h1 style="font-size: large; color:white">CodingMagic</h1>
+      </a>
+    </div>
+  
+    <nav class="main-nav">
+      <ul>
+        <!-- inser more links here -->
+        <li><a class="cd-signin" href="/login">Back to Login</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="form-wrapper">
+    <div class="form-container">
+      <h1 style="font-weight: bold; font-size: 24px;">Reset Password</h1>
+      <form on:submit|preventDefault>
+        <div class="form-container">
+          <div class="form-control">
+            <input
+              id="newPassword"
+              type="password"
+              placeholder="New Password"
+              bind:value={newPassword}
+              required
+            />
+          </div>
+  
+          <div class="form-control">
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              bind:value={confirmPassword}
+              required
+            />
+          </div>
+          {#if resetPasswordError}
+            <a href="/login" class="error">Something went wrong, click here to login</a>
+          {:else if passwordResetSuccessfully}
+            <p>{passwordResetSuccessfully}</p>
+          {/if}
+          {#if !resetPasswordError}
+            <button type="submit" class="btn">Change Password</button>
+          {/if}
         </div>
-
-        <div class="form-control">
-          <input
-            id="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
-            bind:value={confirmPassword}
-            required
-          />
-        </div>
-        {#if resetPasswordError}
-          <a href="/login" class="error">Something went wrong, click here to login</a>
-        {:else if passwordResetSuccessfully}
-          <p>{passwordResetSuccessfully}</p>
-        {/if}
-        {#if !resetPasswordError}
-          <button type="submit" class="btn">Change Password</button>
-        {/if}
-      </div>
-    </form>
-  </div>
+      </form>
+    </div>
+  </div>  
 </div>
 
 <style>
@@ -121,6 +123,14 @@
     font: inherit;
     font-family: "Quicksand", sans-serif;
     vertical-align: baseline;
+  }
+
+  .wrapper{
+    background-image: url(/CodingMagic-1.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
   }
 
   .error {
@@ -270,7 +280,6 @@ Main components
 -------------------------------- */
 
   form {
-    background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -313,11 +322,13 @@ Main components
   }
 
   .form-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70%;
+  padding: 0 2rem;
+}
 
   .form-wrapper .form-control {
     width: 100%;

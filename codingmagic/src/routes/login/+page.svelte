@@ -89,17 +89,36 @@
     }
 
     if (data) {
-      const userAccount = await createUserAccount(username, email);
-      if (userAccount) {
-        console.log("User account created successfully!");
-      } else {
-        console.error("Failed to create user account");
+      const { data, error } = await supabase
+        .from("user_accounts")
+        .select("user_email")
+        .eq("user_email", email)
+        .single();
+
+      if (error) {
+        console.error(error);
+        resetPasswordError = "Failed to verify if the email already exists";
+        return;
       }
-      window.location.href = "http://localhost:5173/confirm-email";
+
+      if (!data) {
+        console.error("Email address not found");
+        resetPasswordError = "Email address not found";
+        return;
+      }
+      if (data) {
+        const userAccount = await createUserAccount(username, email);
+        if (userAccount) {
+          console.log("User account created successfully!");
+        }
+        window.location.href = "http://localhost:5173/confirm-email";
+      } else {
+        resetPasswordError = "Failed to create user account";
+        return;
+      }
     }
   }
 
-  
   //Create user in the user_accounts table
   async function createUserAccount(username: string, email: string) {
     const { data, error } = await supabase
@@ -231,6 +250,7 @@
   function toggleRightPanel() {
     isRightPanelActive = !isRightPanelActive;
     isMagicLinkPagSignInActive = false;
+    isForgotPasswordActive = false;
   }
 
   function toggleMagicLinkSignInPage() {
