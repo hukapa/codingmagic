@@ -30,7 +30,8 @@
         resetPasswordError = error.message;
         return;
       }
-
+      // Reset the error message
+      resetPasswordError = "";
       passwordResetSuccessfully = "Password reset successfully";
       console.log(passwordResetSuccessfully);
 
@@ -79,7 +80,7 @@
   <div class="form-wrapper">
     <div class="form-container">
       <h1 style="font-weight: bold; font-size: 24px;">Reset Password</h1>
-      <form on:submit|preventDefault>
+      <form on:submit|preventDefault={resetPassword}>
         <div class="form-container">
           <div class="form-control">
             <input

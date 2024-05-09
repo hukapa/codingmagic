@@ -58,6 +58,7 @@
 
   // Sign Up Auth Function
   async function signUpAuth() {
+    // Validate the input
     if (!isValidUsername(username)) {
       signUpError =
         "Invalid username. Must be between 3 and 20 characters long.";
@@ -70,51 +71,37 @@
       return;
     }
 
-    if (!isValidPassword(password)) {
-      signUpError =
-        "Invalid Password. Must start with a Capital letter and be at least 6 characters long";
-      console.error(signUpError);
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) {
-      console.error(error);
-      signUpError = error.message;
-      return;
-    }
+    // Check if the email address already exists in the user_accounts table
+    const { data } = await supabase
+      .from("user_accounts")
+      .select("user_email")
+      .eq("user_email", email)
+      .single();
 
     if (data) {
-      const { data, error } = await supabase
-        .from("user_accounts")
-        .select("user_email")
-        .eq("user_email", email)
-        .single();
+      signUpError = "Email address already exists";
+      console.error(signUpError);
+      return;
+    } else {
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      });
 
       if (error) {
         console.error(error);
-        resetPasswordError = "Failed to verify if the email already exists";
+        signUpError = error.message;
         return;
       }
-
-      if (!data) {
-        console.error("Email address not found");
-        resetPasswordError = "Email address not found";
-        return;
-      }
+      // Create the user account
       if (data) {
         const userAccount = await createUserAccount(username, email);
         if (userAccount) {
           console.log("User account created successfully!");
+        } else {
+          console.error("Failed to create user account");
         }
         window.location.href = "http://localhost:5173/confirm-email";
-      } else {
-        resetPasswordError = "Failed to create user account";
-        return;
       }
     }
   }
@@ -186,6 +173,7 @@
       if (!isValidEmail(email)) {
         console.error("Invalid email address");
         resetPasswordError = "Invalid email address";
+        emailSentSuccessfully = "";
         return;
       }
 
@@ -196,15 +184,17 @@
         .eq("user_email", email)
         .single();
 
-      if (error) {
-        console.error(error);
-        resetPasswordError = "Failed to send password reset email";
-        return;
-      }
-
       if (!data) {
         console.error("Email address not found");
         resetPasswordError = "Email address not found";
+        emailSentSuccessfully = "";
+        return;
+      }
+
+      if (error) {
+        console.error(error);
+        resetPasswordError = "Failed to send password reset email";
+        emailSentSuccessfully = "";
         return;
       }
 
@@ -212,8 +202,7 @@
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         email,
         {
-          // Specify the redirect URL
-          redirectTo: "https://localhost:5173/reset-password",
+          redirectTo: "localhost:5173/reset-password",
         }
       );
 
@@ -223,12 +212,13 @@
         resetPasswordError = "Failed to send password reset email";
         return;
       }
-
+      resetPasswordError = "";
       emailSentSuccessfully = "Password reset email sent";
       console.log(emailSentSuccessfully);
     } catch (error) {
       console.error(error);
       resetPasswordError = "Failed to send password reset email";
+      emailSentSuccessfully = "";
     }
   }
 
@@ -333,7 +323,8 @@
           {/if}
 
           <!-- Reset Password -->
-          <a href="#" on:click={toggleForgotPassword}>Forgot your password?</a>
+          <!-- svelte-ignore a11y-invalid-attribute -->
+          <a href="" on:click={toggleForgotPassword}>Forgot your password?</a>
           <button type="submit">Sign In</button>
         </form>
       </div>
