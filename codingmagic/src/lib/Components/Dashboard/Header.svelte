@@ -24,7 +24,7 @@
   
     .notification-icon,
     .support-icon {
-      font-size: 1.2rem;
+      font-size: 2rem;
       color: #6a3093;
       margin-left: 1rem;
       cursor: pointer;

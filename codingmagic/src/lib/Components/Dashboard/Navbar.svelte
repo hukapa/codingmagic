@@ -1,18 +1,12 @@
 <!-- Navbar.svelte -->
 <script lang="ts">
   let expanded = false;
-
   function toggleExpand() {
     expanded = !expanded;
   }
 </script>
 
-<nav
-  class="navbar"
-  class:expanded
-  on:mouseenter={toggleExpand}
-  on:mouseleave={toggleExpand}
->
+<nav class="navbar" class:expanded on:mouseenter={toggleExpand} on:mouseleave={toggleExpand}>
   <div class="top">
     <div class="avatar-container">
       <img src="/avatar.png" alt="User Avatar" class="avatar" />
@@ -24,19 +18,19 @@
       <li>
         <a href="/profile">
           <i class="icon fas fa-user-astronaut"></i>
-          <span class={expanded ? "label" : "label hidden"}>Profile</span>
+          <span class={expanded ? 'label' : 'label hidden'}>Profile</span>
         </a>
       </li>
       <li>
         <a href="/bookmark">
           <i class="icon fas fa-star"></i>
-          <span class={expanded ? "label" : "label hidden"}>Favorites</span>
+          <span class={expanded ? 'label' : 'label hidden'}>Favorites</span>
         </a>
       </li>
       <li>
         <a href="/settings">
           <i class="icon fas fa-magic"></i>
-          <span class={expanded ? "label" : "label hidden"}>Settings</span>
+          <span class={expanded ? 'label' : 'label hidden'}>Settings</span>
         </a>
       </li>
     </ul>
@@ -46,20 +40,27 @@
   </div>
 </nav>
 
+
 <style>
   .navbar {
     width: 80px;
-    background-color: #6a3093;
+    background-color: #4b2d72;
     color: #fff;
     transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
   }
 
   .navbar.expanded {
     width: 200px;
   }
+
 
   .top {
     padding: 1rem;
@@ -67,27 +68,27 @@
   }
 
   .avatar-container {
-  text-align: center;
-}
+    text-align: center;
+  }
 
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  margin: 0 auto; /* center the avatar horizontally */
-}
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+  }
 
-.username {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ffd700;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  margin-top: 0.5rem;
-}
+  .username {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d8b3ff;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-top: 0.5rem;
+  }
 
   .nav-items {
     flex: 1;
@@ -97,7 +98,7 @@
     align-items: center;
   }
 
-  .hidden{
+  .hidden {
     display: none;
   }
 
@@ -127,7 +128,7 @@
   }
 
   li a:hover {
-    background-color: rgba(216, 179, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   .icon {
