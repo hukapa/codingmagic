@@ -28,7 +28,7 @@
         </a>
       </li>
       <li>
-        <a href="/favorites">
+        <a href="/bookmark">
           <i class="icon fas fa-star"></i>
           <span class={expanded ? "label" : "label hidden"}>Favorites</span>
         </a>
@@ -49,7 +49,7 @@
 <style>
   .navbar {
     width: 80px;
-    background-color: #4b2d72;
+    background-color: #6a3093;
     color: #fff;
     transition: width 0.3s ease;
     display: flex;
@@ -84,8 +84,8 @@
   display: block;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #d8b3ff;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   margin-top: 0.5rem;
 }
 
@@ -127,7 +127,7 @@
   }
 
   li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(216, 179, 255, 0.2);
   }
 
   .icon {

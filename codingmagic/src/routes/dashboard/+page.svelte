@@ -1,4 +1,4 @@
-<!-- App.svelte -->
+<!-- dashboard -->
 <script lang="ts">
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";

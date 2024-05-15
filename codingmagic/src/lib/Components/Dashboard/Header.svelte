@@ -13,7 +13,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 1rem;
-      background-color: #fff;
+      background-color: #e6ccff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
   
@@ -25,7 +25,7 @@
     .notification-icon,
     .support-icon {
       font-size: 1.2rem;
-      color: #888;
+      color: #6a3093;
       margin-left: 1rem;
       cursor: pointer;
       transition: color 0.3s ease;
@@ -33,6 +33,6 @@
   
     .notification-icon:hover,
     .support-icon:hover {
-      color: #333;
+      color: #ffd700;
     }
   </style>
