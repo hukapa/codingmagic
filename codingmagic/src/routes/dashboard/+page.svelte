@@ -1,5 +1,6 @@
 <!-- dashboard -->
 <script lang="ts">
+  import CourseGrid from "$lib/Components/Dashboard/CourseGrid.svelte";
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
   import SearchBar from "$lib/Components/Dashboard/SearchBar.svelte";
@@ -16,6 +17,7 @@
         <!-- Other header components: Notifications, Support, etc. -->
       </Header>
       <!-- Main content area -->
+      <CourseGrid />
     </div>
   </div>
 </main>
