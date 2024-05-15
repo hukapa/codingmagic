@@ -7,13 +7,15 @@
 </script>
 
 <main>
-  <div class="dashboard ">
+  <div class="dashboard">
     <Navbar />
     <div class="content">
-      <Header>
-        <SearchBar />
-        <!-- Other header components: Notifications, Support, etc. -->
-      </Header>
+      <div class="header-cooked">
+        <Header>
+          <SearchBar />
+          <!-- Other header components: Notifications, Support, etc. -->
+        </Header>
+      </div>
       <!-- Main content area -->
       <CourseGrid />
     </div>
@@ -31,5 +33,9 @@
   .content {
     flex: 1;
     padding: 1rem;
+  }
+
+  .header-cooked{
+    padding-left: 80px;
   }
 </style>

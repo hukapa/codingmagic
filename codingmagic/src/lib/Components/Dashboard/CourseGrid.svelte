@@ -20,6 +20,13 @@
       description:
         "Python is a versatile and powerful programming language known for its simplicity and readability. It is widely used in data analysis, machine learning, web development, and many other domains.",
     },
+    {
+      id: 3,
+      title: "CS:GO",
+      bookmarked:false,
+      image: "/CodingMagic-1.jpg",
+      description: "CS:GO got released today, and its the best programming language in the world in every aspect."
+    },
     // Add more courses here
   ];
 
@@ -210,7 +217,6 @@
 
   @media (max-width: 767px) {
     .course-grid {
-      padding-left: 0;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
