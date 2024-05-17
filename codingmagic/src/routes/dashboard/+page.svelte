@@ -25,7 +25,7 @@
 <style>
   .dashboard {
     display: flex;
-    height: 100vh;
+    height: 100%;
     background-color: black;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
