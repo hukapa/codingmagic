@@ -1,14 +1,7 @@
 <script lang="ts">
-  import {
-    PUBLIC_SUPABASE_ANON_KEY,
-    PUBLIC_SUPABASE_URL,
-  } from "$env/static/public";
-  import { createClient } from "@supabase/supabase-js";
+  import {supabase} from "$lib/supabase"
   import SocialContainer from "$lib/Components/SocialContainer.svelte";
-
-  const supabaseUrl = PUBLIC_SUPABASE_URL;
-  const supabaseKey = PUBLIC_SUPABASE_ANON_KEY;
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  import { goto } from "$app/navigation";
 
   let username: "";
   let email = "";
@@ -86,6 +79,9 @@
       const { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
+        options: {
+        emailRedirectTo: `http://localhost:5173/confirm?redirect_to=/dashboard`, // Redirecionar após confirmação
+      },
       });
 
       if (error) {
@@ -101,7 +97,7 @@
         } else {
           console.error("Failed to create user account");
         }
-        window.location.href = "http://localhost:5173/confirm-email";
+        goto('/confirm-email');
       }
     }
   }

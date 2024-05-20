@@ -1,7 +1,6 @@
 <script lang="ts">
 </script>
 
-<!-- svelte-ignore a11y-no-redundant-roles -->
 <div class="wrapper">
   <header role="banner">
     <div id="cd-logo">
@@ -9,7 +8,7 @@
         <h1 style="font-size: large; color:white">CodingMagic</h1>
       </a>
     </div>
-  
+
     <nav class="main-nav">
       <ul>
         <!-- inser more links here -->
@@ -22,12 +21,14 @@
       <h1 style="font-weight: bold; font-size: 24px;">Confirm Email</h1>
       <div class="form-container">
         <div class="form-control">
-          <h2>An email confirmation was sent to. Please check your inbox and follow the instructions to confirm your account.
-            <br>
-            <br>
+          <h2>
+            An email confirmation was sent to. Please check your inbox and
+            follow the instructions to confirm your account.
+            <br />
+            <br />
             If you don't see the email, check your spam folder.
-
           </h2>
+          <h1><h1 /></h1>
         </div>
       </div>
     </div>
@@ -45,7 +46,7 @@
     vertical-align: baseline;
   }
 
-  .wrapper{
+  .wrapper {
     background-image: url(/CodingMagic-1.jpg);
     background-size: cover;
     background-repeat: no-repeat;
@@ -208,13 +209,13 @@
   }
 
   .form-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 70%;
-  padding: 0 2rem;
-}
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+    padding: 0 2rem;
+  }
   .form-wrapper .form-control {
     width: 100%;
   }
