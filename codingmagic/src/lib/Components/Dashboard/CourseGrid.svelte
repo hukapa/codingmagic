@@ -1,7 +1,7 @@
 <script lang="ts">
   import { redirect } from "@sveltejs/kit";
   import { onMount } from "svelte";
-  import { goto } from '$app/navigation';
+  import { goto } from "$app/navigation";
   import { fade, fly } from "svelte/transition";
 
   interface Course {
@@ -19,7 +19,7 @@
       bookmarked: false,
       image: "/csharp.png",
       description:
-        "C# is a modern, object-oriented programming language developed by Microsoft. It is widely used for building a variety of applications, including desktop, web, mobile, and games.",
+        "C# is a versatile programming language by Microsoft for various applications.",
     },
     {
       id: 2,
@@ -27,7 +27,7 @@
       bookmarked: false,
       image: "/python.jpg",
       description:
-        "Python is a versatile and powerful programming language known for its simplicity and readability. It is widely used in data analysis, machine learning, web development, and many other domains.",
+        "Python is a powerful, user-friendly language widely used in data analysis, machine learning, and web development",
     },
     {
       id: 3,
@@ -95,8 +95,11 @@
             <i class="fas fa-bookmark"></i>
           </button>
         </div>
-        <button class="details-btn" on:click={() => redirectToCourseDetails(course.title)}>
-          <span>Details</span>
+        <button
+          class="details-btn"
+          on:click={() => redirectToCourseDetails(course.title)}
+        >
+          <span>Start Now!</span>
           <i class="fas fa-arrow-right"></i>
         </button>
       </div>
@@ -126,7 +129,16 @@
   {/each}
 </div>
 
-<style>
+<style lang="scss">
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;700&display=swap");
+
+  $primary-color: #6a3093;
+  $secondary-color: #9d7ad3;
+  $accent-color: #ffa500;
+  h3 {
+    font-family: "Montserrat", sans-serif;
+  }
+
   @property --rotate {
     syntax: "";
     initial-value: 132deg;
@@ -156,7 +168,11 @@
     font-size: 1.5em;
     color: rgb(88 199 250 / 0%);
     font-family: cursive;
+    background-color: $primary-color;
+    color: white;
+    transition: transform 0.3s ease-in-out;
     overflow: hidden;
+    animation: float 6s ease-in-out infinite;
   }
 
   .card:hover {
@@ -170,12 +186,6 @@
     width: 104%;
     height: 102%;
     border-radius: 8px;
-    background-image: linear-gradient(
-      var(--rotate),
-      #5ddcff,
-      #3c67e3 43%,
-      #4e00c2
-    );
     position: absolute;
     z-index: -1;
     top: -1%;
@@ -207,12 +217,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 96%;
     padding: 1rem 1.5rem;
     background-color: #6a3093;
     color: #fff;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
@@ -337,9 +345,35 @@
     }
   }
 
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
   @media (max-width: 767px) {
     .course-grid {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .card {
+      max-width: none;
+    }
+
+    .image-wrapper {
+      height: 200px;
+    }
+  }
+
+  @media (min-width: 1679px) {
+    .course-grid {
+      grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
     }
 
     .card {

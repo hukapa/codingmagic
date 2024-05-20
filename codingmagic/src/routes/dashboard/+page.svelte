@@ -12,7 +12,6 @@
     <div class="content">
       <div class="header-cooked">
         <Header>
-          <SearchBar />
           <!-- Other header components: Notifications, Support, etc. -->
         </Header>
       </div>
@@ -26,6 +25,9 @@
   .dashboard {
     display: flex;
     height: 100%;
+    width: 100%;
+    /* background-image: url(/CodingMagic-1.jpg);
+    background-size: cover; */
     background-color: black;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
