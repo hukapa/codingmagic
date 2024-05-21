@@ -81,6 +81,9 @@
         password: password,
         options: {
         emailRedirectTo: `http://localhost:5173/confirm?redirect_to=/dashboard`, // Redirecionar após confirmação
+        data:{
+          name: username,
+        }
       },
       });
 
@@ -89,31 +92,8 @@
         signUpError = error.message;
         return;
       }
-      // Create the user account
-      if (data) {
-        const userAccount = await createUserAccount(username, email);
-        if (userAccount) {
-          console.log("User account created successfully!");
-        } else {
-          console.error("Failed to create user account");
-        }
-        goto('/confirm-email');
-      }
+      goto('/confirm-email');
     }
-  }
-
-  //Create user in the user_accounts table
-  async function createUserAccount(username: string, email: string) {
-    const { data, error } = await supabase
-      .from("user_accounts")
-      .insert({ username: username, user_email: email });
-
-    if (error) {
-      console.error(error);
-      return null;
-    }
-
-    return data;
   }
 
   // Sign in with email and password
