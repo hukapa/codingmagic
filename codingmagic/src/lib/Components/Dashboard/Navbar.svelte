@@ -1,10 +1,30 @@
 <!-- Navbar.svelte -->
 <script lang="ts">
+  export let supabase;
+	export let session;
+	export let username;
+  import { goto, invalidateAll } from "$app/navigation";
+
 
   let expanded = false;
   function toggleExpand() {
     expanded = !expanded;
   }
+
+  supabase.auth.onAuthStateChange(async(event: string,session: any) =>{
+    if (event === 'SIGNED_IN') {
+      invalidateAll();
+    }
+
+    if(event === 'SIGNED_OUT'){
+      await goto("login")
+      invalidateAll();
+    }
+    return
+  })
+
+  console.log(supabase)
+  console.log(session)
 </script>
 
 <nav
@@ -16,7 +36,7 @@
   <div class="top">
     <div class="avatar-container">
       <img src="/avatar.png" alt="User Avatar" class="avatar" />
-      <span class="username">User Name</span>
+      <span class="username">{username}</span>
     </div>
   </div>
   <div class="nav-items">
@@ -42,7 +62,7 @@
     </ul>
   </div>
   <div class="bottom">
-    <button class="sign-out">Sign Out</button>
+    <button class="sign-out" on:click={async () =>{await supabase.auth.signOut()}}>Sign Out</button>
   </div>
 </nav>
 

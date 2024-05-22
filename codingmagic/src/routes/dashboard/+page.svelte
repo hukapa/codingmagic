@@ -1,28 +1,24 @@
 <!-- dashboard -->
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  export let data;
+  import { setContext } from "svelte";
   import CourseGrid from "$lib/Components/Dashboard/CourseGrid.svelte";
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
 
-  export let data;
+  const { supabase, session } = data;
 
-  let { supabase, session } = data;
-  $: ({ supabase, session } = data);
+  setContext("supabaseContext", { supabase, session });
 
   let username = session?.user.user_metadata.name;
 
   console.log(supabase);
   console.log(session);
-
-  if(session == null){
-    goto("/login")
-  }
 </script>
 
 <main>
   <div class="dashboard">
-    <Navbar/>
+    <Navbar {supabase} {session} {username} />
     <div class="content">
       <div class="header-cooked">
         <Header>

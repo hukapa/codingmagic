@@ -1,11 +1,10 @@
 <script lang="ts">
+  export let data;
   import SocialContainer from "$lib/Components/SocialContainer.svelte";
   import { goto } from "$app/navigation";
 
-  export let data;
-
-  let {supabase, session} = data
-  $: ({supabase,session} = data)
+  let { supabase, session } = data;
+  $: ({ supabase, session } = data);
 
   console.log(supabase);
   console.log(session);
@@ -21,6 +20,9 @@
   let isMagicLinkPagSignInActive = false;
   let isForgotPasswordActive = false;
 
+  $: if (session !== null) {
+    goto("/dashboard");
+  }
 
 
   // Sign In With Email Function
@@ -89,11 +91,11 @@
         email: email,
         password: password,
         options: {
-        emailRedirectTo: `http://localhost:5173/dashboard`, // Redirecionar após confirmação
-        data:{
-          name: username,
-        }
-      },
+          emailRedirectTo: `http://localhost:5173/dashboard`, // Redirecionar após confirmação
+          data: {
+            name: username,
+          },
+        },
       });
 
       if (error) {
@@ -101,7 +103,7 @@
         signUpError = error.message;
         return;
       }
-      goto('/confirm-email');
+      goto("/confirm-email");
     }
   }
 
@@ -138,18 +140,6 @@
       // Redirect the user to the dashboard or another page
       window.location.href = "http://localhost:5173/dashboard";
     }
-  }
-
-  // Sign Out Function
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error(error);
-      return;
-    }
-    // Redirect the user to the sign-in page
-    window.location.href = "http://localhost:5173/login";
-    console.log("Sign-out successful!");
   }
 
   async function sendPasswordResetEmail() {
