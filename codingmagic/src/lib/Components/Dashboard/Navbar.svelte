@@ -1,12 +1,18 @@
 <!-- Navbar.svelte -->
 <script lang="ts">
+
   let expanded = false;
   function toggleExpand() {
     expanded = !expanded;
   }
 </script>
 
-<nav class="navbar" class:expanded on:mouseenter={toggleExpand} on:mouseleave={toggleExpand}>
+<nav
+  class="navbar"
+  class:expanded
+  on:mouseenter={toggleExpand}
+  on:mouseleave={toggleExpand}
+>
   <div class="top">
     <div class="avatar-container">
       <img src="/avatar.png" alt="User Avatar" class="avatar" />
@@ -18,19 +24,19 @@
       <li>
         <a href="/profile">
           <i class="icon fas fa-user-astronaut"></i>
-          <span class={expanded ? 'label' : 'label hidden'}>Profile</span>
+          <span class={expanded ? "label" : "label hidden"}>Profile</span>
         </a>
       </li>
       <li>
         <a href="/bookmark">
           <i class="icon fas fa-star"></i>
-          <span class={expanded ? 'label' : 'label hidden'}>Favorites</span>
+          <span class={expanded ? "label" : "label hidden"}>Favorites</span>
         </a>
       </li>
       <li>
         <a href="/settings">
           <i class="icon fas fa-magic"></i>
-          <span class={expanded ? 'label' : 'label hidden'}>Settings</span>
+          <span class={expanded ? "label" : "label hidden"}>Settings</span>
         </a>
       </li>
     </ul>
@@ -39,7 +45,6 @@
     <button class="sign-out">Sign Out</button>
   </div>
 </nav>
-
 
 <style>
   .navbar {
@@ -60,7 +65,6 @@
   .navbar.expanded {
     width: 200px;
   }
-
 
   .top {
     padding: 1rem;

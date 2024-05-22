@@ -1,13 +1,28 @@
 <!-- dashboard -->
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import CourseGrid from "$lib/Components/Dashboard/CourseGrid.svelte";
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
+
+  export let data;
+
+  let { supabase, session } = data;
+  $: ({ supabase, session } = data);
+
+  let username = session?.user.user_metadata.name;
+
+  console.log(supabase);
+  console.log(session);
+
+  if(session == null){
+    goto("/login")
+  }
 </script>
 
 <main>
   <div class="dashboard">
-    <Navbar />
+    <Navbar/>
     <div class="content">
       <div class="header-cooked">
         <Header>
@@ -36,7 +51,7 @@
     padding: 1rem;
   }
 
-  .header-cooked{
+  .header-cooked {
     padding-left: 80px;
   }
 </style>

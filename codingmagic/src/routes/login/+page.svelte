@@ -1,7 +1,14 @@
 <script lang="ts">
-  import {supabase} from "$lib/supabase"
   import SocialContainer from "$lib/Components/SocialContainer.svelte";
   import { goto } from "$app/navigation";
+
+  export let data;
+
+  let {supabase, session} = data
+  $: ({supabase,session} = data)
+
+  console.log(supabase);
+  console.log(session);
 
   let username: "";
   let email = "";
@@ -13,6 +20,8 @@
   let isRightPanelActive = true;
   let isMagicLinkPagSignInActive = false;
   let isForgotPasswordActive = false;
+
+
 
   // Sign In With Email Function
   async function signInWithEmail() {
@@ -80,7 +89,7 @@
         email: email,
         password: password,
         options: {
-        emailRedirectTo: `http://localhost:5173/confirm?redirect_to=/dashboard`, // Redirecionar após confirmação
+        emailRedirectTo: `http://localhost:5173/dashboard`, // Redirecionar após confirmação
         data:{
           name: username,
         }
