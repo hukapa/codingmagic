@@ -75,9 +75,9 @@
       return;
     }
 
-    // Check if the email address already exists in the user_accounts table
+    // Check if the email address already exists in the profiles table
     const { data } = await supabase
-      .from("user_accounts")
+      .from("profiles")
       .select("user_email")
       .eq("user_email", email)
       .single();
@@ -154,7 +154,7 @@
 
       // Check if the email address exists in the Supabase database
       const { data, error } = await supabase
-        .from("user_accounts")
+        .from("profiles")
         .select("user_email")
         .eq("user_email", email)
         .single();

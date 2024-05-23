@@ -1,6 +1,6 @@
 <!-- Navbar.svelte -->
 <script lang="ts">
-  export let supabase;
+  export let supabase:any;
 	export let session;
 	export let username;
   import { goto, invalidateAll } from "$app/navigation";
@@ -11,16 +11,21 @@
     expanded = !expanded;
   }
 
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    goto("/login"); 
+  }
+
   supabase.auth.onAuthStateChange(async(event: string,session: any) =>{
     if (event === 'SIGNED_IN') {
+      console.log("signed in")
       invalidateAll();
     }
 
     if(event === 'SIGNED_OUT'){
-      await goto("login")
       invalidateAll();
+      console.log("signed out")
     }
-    return
   })
 
   console.log(supabase)
@@ -62,7 +67,7 @@
     </ul>
   </div>
   <div class="bottom">
-    <button class="sign-out" on:click={async () =>{await supabase.auth.signOut()}}>Sign Out</button>
+    <button class="sign-out" on:click={handleSignOut}>Sign Out</button>
   </div>
 </nav>
 

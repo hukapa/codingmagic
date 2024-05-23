@@ -1,23 +1,54 @@
 <!-- dashboard -->
 <script lang="ts">
   export let data;
-  import { setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
+  import { writable } from "svelte/store";
   import CourseGrid from "$lib/Components/Dashboard/CourseGrid.svelte";
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
+  import { goto } from "$app/navigation";
+  import WelcomeModal from "$lib/Components/Dashboard/WelcomeModal.svelte";
 
   const { supabase, session } = data;
 
   setContext("supabaseContext", { supabase, session });
 
   let username = session?.user.user_metadata.name;
+  let shouldShowModal = true;
 
   console.log(supabase);
   console.log(session);
+
+  if (session !== null) {
+    console.log("session is not null");
+  } else {
+    console.log("session is null");
+    goto("/login");
+  }
+
+  onMount(async () => {
+    const hasSeenWelcome = localStorage.getItem("has_seen_welcome");
+    console.log("Has seen welcome:")
+    console.log(hasSeenWelcome)
+    console.log("ur cooked if its true")
+    if (hasSeenWelcome === "true") {
+      shouldShowModal = false;
+    } else {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("has_seen_welcome")
+        .eq("user_id", session?.user.id);
+
+      shouldShowModal = !data || !data[0].has_seen_welcome;
+    }
+  });
 </script>
 
 <main>
   <div class="dashboard">
+    {#if shouldShowModal}
+      <WelcomeModal {supabase} {session}{username} />
+    {/if}
     <Navbar {supabase} {session} {username} />
     <div class="content">
       <div class="header-cooked">

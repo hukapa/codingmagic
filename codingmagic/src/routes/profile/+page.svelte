@@ -1,20 +1,19 @@
-<!-- <!-- src/routes/account/+page.svelte
+<!-- /profile +page.svelte -->
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
 	export let data
 	export let form
+	
 
-	let { session, supabase, user_accounts } = data
-	$: ({ session, supabase, user_accounts } = data)
+	let { session, supabase, profile } = data
+	$: ({ session, supabase, profile } = data)
 
 	let profileForm: HTMLFormElement
 	let loading = false
-	let fullName: string = user_accounts?.full_name ?? ''
-	let username: string = user_accounts?.username ?? ''
-	let website: string = user_accounts?.website ?? ''
-	let avatarUrl: string = user_accounts?.avatar_url ?? ''
+	let username: string = profile?.username ?? ''
+	let avatarUrl: string = profile?.avatar_url ?? ''
 
 	const handleSubmit: SubmitFunction = () => {
 		loading = true
@@ -46,8 +45,8 @@
 		</div>
 
 		<div>
-			<label for="fullName">Full Name</label>
-			<input id="fullName" name="fullName" type="text" value={form?.fullName ?? fullName} />
+			<label for="fullName">Full Name nothing</label>
+			<input id="fullName" name="fullName" type="text" />
 		</div>
 
 		<div>
@@ -56,8 +55,8 @@
 		</div>
 
 		<div>
-			<label for="website">Website</label>
-			<input id="website" name="website" type="url" value={form?.website ?? website} />
+			<label for="website">Website nothing</label>
+			<input id="website" name="website" type="url"/>
 		</div>
 
 		<div>
@@ -75,6 +74,4 @@
 			<button class="button block" disabled={loading}>Sign Out</button>
 		</div>
 	</form>
-</div> -->
-
-https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit
+</div>
