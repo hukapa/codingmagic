@@ -60,15 +60,6 @@
             />
           </div>
           <div class="form-group">
-            <label for="fullName" class="form-label">Full Name</label>
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              class="form-input"
-            />
-          </div>
-          <div class="form-group">
             <label for="username" class="form-label">Username</label>
             <input
               id="username"
@@ -77,11 +68,7 @@
               value={form?.username ?? username}
               class="form-input"
             />
-          </div>
-          <div class="form-group">
-            <label for="website" class="form-label">Website</label>
-            <input id="website" name="website" type="url" class="form-input" />
-          </div>
+          </div>	
           <div class="form-group">
             <input
               type="submit"

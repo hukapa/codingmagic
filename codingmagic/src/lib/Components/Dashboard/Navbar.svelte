@@ -29,18 +29,18 @@
     }
   });
 
-  $: if (session?.user) {
-    supabase
-      .from("profiles")
-      .select("avatar_url")
-      .eq("id", session.user.id)
-      .single()
-      .then(({ data, error }) => {
-        if (data) {
-          avatarUrl = data.avatar_url;
-        }
-      });
-  }
+  // $: if (session?.user) {
+  //   supabase
+  //     .from("profiles")
+  //     .select("avatar_url")
+  //     .eq("id", session.user.id)
+  //     .single()
+  //     .then(({ data, error }) => {
+  //       if (data) {
+  //         avatarUrl = data.avatar_url;
+  //       }
+  //     });
+  // }
 
   console.log(supabase);
   console.log(session);
@@ -54,11 +54,11 @@
 >
   <div class="top">
     <div class="avatar-container">
-      {#if avatarUrl}
+      <!-- {#if avatarUrl}
         <Avatar {supabase} url={avatarUrl} size={6} />
       {:else}
         <img src="/avatar.png" alt="User Avatar" class="avatar" />
-      {/if}
+      {/if} -->
       <span class="username">{username}</span>
     </div>
   </div>
