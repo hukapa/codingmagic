@@ -3,7 +3,6 @@
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
   import Avatar from "$lib/Components/Avatar.svelte";
-  import BackArrow from "$lib/Icons/BackArrow.svelte";
   import type { SubmitFunction } from "@sveltejs/kit";
 
   export let data;

@@ -1,132 +1,168 @@
+<!-- +page.svelte -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
-  let currentLesson = 0;
-  let codeVisible = false;
-
-  const lessons = [
-    {
-      title: "The Essence of C#",
-      theory:
-        "C# is a versatile, object-oriented programming language used to create a wide range of applications.",
-      example: `// Hello, world!
-Console.WriteLine("Welcome to the realm of C#!");`,
-      practice: "Write a C# program that prints your name to the console.",
-    },
-    {
-      title: "Variables and Data Types",
-      theory:
-        "Variables store values, and data types define what kind of values they can hold.",
-      example: `string name = "Merlin";
-int age = 1000;
-bool isWizard = true;`,
-      practice:
-        "Declare variables to store your favorite spell, its power level, and whether it's offensive or defensive.",
-    },
-    // Add more lessons here...
-  ];
-
-  function toggleCodeVisibility() {
-    codeVisible = !codeVisible;
+  function startCourse() {
+    goto("/courses/Csharp/lesson1");
   }
-
-  function nextLesson() {
-    currentLesson = (currentLesson + 1) % lessons.length;
-    codeVisible = false;
-  }
-
-  onMount(() => {
-    // Optional: Add animations or effects here
-  });
 </script>
 
-<div class="learning-page">
-  <div class="lesson-container">
-    <h1 class="lesson-title">{lessons[currentLesson].title}</h1>
-
-    <p class="theory-text">{lessons[currentLesson].theory}</p>
-
-    <button class="toggle-button" on:click={toggleCodeVisibility}>
-      {codeVisible ? "Hide Example" : "Reveal Example"}
-    </button>
-
-    {#if codeVisible}
-      <pre class="code-block">{lessons[currentLesson].example}</pre>
-    {/if}
-
-    <p class="practice-text">
-      <strong>Practice:</strong>
-      {lessons[currentLesson].practice}
-    </p>
-
-    <button class="next-button" on:click={nextLesson}> Next Lesson </button>
+<main>
+  <div class="container">
+    <div class="content">
+      <h1>Master the Art of C# Magic</h1>
+      <p>
+        Embark on a mystical journey through the realm of C# programming. In
+        this comprehensive course, you'll learn to wield the power of
+        object-oriented programming, conjure console applications, and construct
+        enchanting Windows desktop applications. Explore advanced incantations
+        like LINQ, asynchronous programming, and more. By the end of your
+        training, you'll possess the arcane knowledge to craft robust and
+        efficient C# applications for various enchanted realms.
+      </p>
+      <button class="button" on:click={startCourse}>
+        <i class="fas fa-hat-wizard"></i>
+        Begin Your Magical Quest
+      </button>
+    </div>
   </div>
-</div>
+  <div class="background">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="circle circle-4"></div>
+  </div>
+</main>
 
 <style>
-  .learning-page {
-    background-color: black;
-    color: #f0e6d2;
-    min-height: 100vh;
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+  main {
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url(/CodingMagic-3.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    overflow: hidden;
+  }
+  .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: "Lora", serif;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
   }
 
-  .spell-container {
-    background-color: rgba(51, 25, 85, 0.8);
-    border: 2px solid #9d7ad3;
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  .content {
+    max-width: 800px;
     text-align: center;
+    padding: 40px;
   }
 
-  .spell-title {
-    font-family: "Cinzel Decorative", cursive;
-    font-size: 2.5rem;
-    color: #d4af37;
-    margin-bottom: 1rem;
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
-  .spell-text {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
   }
 
-  .cast-button {
-    background-color: #9b59b6;
+  .button {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
     color: #fff;
-    border: none;
-    padding: 0.8rem 1.6rem;
-    border-radius: 8px;
-    cursor: pointer;
+    background-color: #6a3093;
+    border-radius: 4px;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .cast-button:hover {
-    background-color: #8e44ad;
-  }
-  .lesson-container {
-    /* ... */
-    text-align: left; /* Align text to the left */
+  .button:hover {
+    background-color: #9d7ad3;
   }
 
-  .theory-text,
-  .practice-text {
-    margin-bottom: 1rem;
+  .button i {
+    margin-right: 8px;
   }
 
-  .code-block {
-    background-color: #191c29;
-    padding: 1rem;
-    border-radius: 8px;
-    overflow-x: auto; /* Enable horizontal scrolling for long code */
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 
-  .toggle-button {
-    /* ... (style like the other buttons) ... */
+  .circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: float 6s infinite ease-in-out;
+  }
+
+  .circle-1 {
+    width: 200px;
+    height: 200px;
+    background-color: #ff9800;
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+  }
+
+  .circle-2 {
+    width: 150px;
+    height: 150px;
+    background-color: #e91e63;
+    top: 50%;
+    left: -75px;
+    animation-delay: 2s;
+  }
+
+  .circle-3 {
+    width: 120px;
+    height: 120px;
+    background-color: #3f51b5;
+    bottom: -60px;
+    right: -60px;
+    animation-delay: 4s;
+  }
+
+  .circle-4 {
+    width: 80px;
+    height: 80px;
+    background-color: #4caf50;
+    top: 20%;
+    right: -40px;
+    animation-delay: 6s;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(50px, 50px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
   }
 </style>
