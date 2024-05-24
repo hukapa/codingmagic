@@ -1,11 +1,12 @@
 <!-- Navbar.svelte -->
 <script lang="ts">
-  export let supabase:any;
-	export let session;
-	export let username;
+  export let supabase: any;
+  export let session;
+  export let username;
   import { goto, invalidateAll } from "$app/navigation";
+  import Avatar from "../Avatar.svelte";
 
-
+  let avatarUrl: string | null = null;
   let expanded = false;
   function toggleExpand() {
     expanded = !expanded;
@@ -13,23 +14,36 @@
 
   async function handleSignOut() {
     await supabase.auth.signOut();
-    goto("/login"); 
+    goto("/login");
   }
 
-  supabase.auth.onAuthStateChange(async(event: string,session: any) =>{
-    if (event === 'SIGNED_IN') {
-      console.log("signed in")
+  supabase.auth.onAuthStateChange(async (event: string, session: any) => {
+    if (event === "SIGNED_IN") {
+      console.log("signed in");
       invalidateAll();
     }
 
-    if(event === 'SIGNED_OUT'){
+    if (event === "SIGNED_OUT") {
       invalidateAll();
-      console.log("signed out")
+      console.log("signed out");
     }
-  })
+  });
 
-  console.log(supabase)
-  console.log(session)
+  $: if (session?.user) {
+    supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", session.user.id)
+      .single()
+      .then(({ data, error }) => {
+        if (data) {
+          avatarUrl = data.avatar_url;
+        }
+      });
+  }
+
+  console.log(supabase);
+  console.log(session);
 </script>
 
 <nav
@@ -40,7 +54,11 @@
 >
   <div class="top">
     <div class="avatar-container">
-      <img src="/avatar.png" alt="User Avatar" class="avatar" />
+      {#if avatarUrl}
+        <Avatar {supabase} url={avatarUrl} size={6} />
+      {:else}
+        <img src="/avatar.png" alt="User Avatar" class="avatar" />
+      {/if}
       <span class="username">{username}</span>
     </div>
   </div>
