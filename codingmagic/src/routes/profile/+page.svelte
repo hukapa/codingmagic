@@ -16,6 +16,7 @@
   let avatarUrl: string = profile?.avatar_url ?? "";
 
   const handleSubmit: SubmitFunction = () => {
+    console.log("submit")
     loading = true;
     return async () => {
       loading = false;
@@ -29,12 +30,16 @@
       update();
     };
   };
+
+  function hasUsername(form: any): form is { username: string } {
+    return form && typeof form.username === "string";
+  }
 </script>
 
 <div class="wrapper">
   <div class="page-container">
     <div class="go-back">
-      <button on:click={()=>goto("/dashboard")}> Back </button>
+      <button on:click={() => goto("/dashboard")}>Back</button>
     </div>
     <div class="form-container">
       <div class="form-widget">
@@ -64,10 +69,10 @@
               id="username"
               name="username"
               type="text"
-              value={form?.username ?? username}
+              value={hasUsername(form) ? form.username : username}
               class="form-input"
             />
-          </div>	
+          </div>
           <div class="form-group">
             <input
               type="submit"
