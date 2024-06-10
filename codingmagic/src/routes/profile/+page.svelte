@@ -15,24 +15,31 @@
   let avatarUrl = "";
   let email = session?.user.email;
   let currentUsername = "Loading...";
-  let errorMessage = ""; // To display errors
+  let errorMessage = "";
+
+  if (session !== null) {
+    console.log("session is not null");
+  } else {
+    console.log("session is null");
+    goto("/login");
+  }
 
   onMount(async () => {
-		const { error, data } = await supabase
-			.from("profiles")
-			.select("username")
-			.eq("user_id", session?.user.id)
-			.single();
+    const { error, data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("user_id", session?.user.id)
+      .single();
 
-		if (error) {
-			console.error("Error fetching username:", error);
-			currentUsername = "Failed to load your Username";
-		} else if (data) {
-			currentUsername = data.username;
-		} else {
-			currentUsername = "Username not found";
-		}
-	});
+    if (error) {
+      console.error("Error fetching username:", error);
+      currentUsername = "Failed to load your Username";
+    } else if (data) {
+      currentUsername = data.username;
+    } else {
+      currentUsername = "Username not found";
+    }
+  });
 
   async function updateProfile() {
     // Validation
