@@ -2,6 +2,7 @@
 <script lang="ts">
   import type { SupabaseClient } from "@supabase/supabase-js";
   import { createEventDispatcher } from "svelte";
+  import Navbar from "./Dashboard/Navbar.svelte";
 
   export let size = 10;
   export let url: string;
@@ -35,7 +36,7 @@
   const uploadAvatar = async () => {
     try {
       uploading = true;
-
+      console.log("hehe")
       if (!files || files.length === 0) {
         throw new Error("You must select an image to upload.");
       }

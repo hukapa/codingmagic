@@ -2,9 +2,15 @@
 <script lang="ts">
   export let supabase: any;
   export let session;
-  export let username;
   import { goto, invalidateAll } from "$app/navigation";
+  import { onMount } from "svelte";
   import Avatar from "../Avatar.svelte";
+
+  let currentUsername = "";
+
+  interface ProfileData {
+    avatar_url: string;
+  }
 
   let avatarUrl: string | null = null;
   let expanded = false;
@@ -29,21 +35,37 @@
     }
   });
 
-  // $: if (session?.user) {
-  //   supabase
-  //     .from("profiles")
-  //     .select("avatar_url")
-  //     .eq("id", session.user.id)
-  //     .single()
-  //     .then(({ data, error }) => {
-  //       if (data) {
-  //         avatarUrl = data.avatar_url;
-  //       }
-  //     });
-  // }
+  $: if (session?.user) {
+    supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("user_id", session.user.id)
+      .single()
+      .then(({ data, error }: { data: ProfileData | null; error: any }) => {
+        if (error) {
+          console.error("Error fetching avatar:", error);
+        } else if (data) {
+          avatarUrl = data.avatar_url;
+        }
+      });
+  }
 
-  console.log(supabase);
-  console.log(session);
+  onMount(async () => {
+    const { error, data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("user_id", session?.user.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching username:", error);
+      currentUsername = "Failed to load your Username";
+    } else if (data) {
+      currentUsername = data.username;
+    } else {
+      currentUsername = "Username not found";
+    }
+  });
 </script>
 
 <nav
@@ -54,12 +76,12 @@
 >
   <div class="top">
     <div class="avatar-container">
-      <!-- {#if avatarUrl}
+      {#if avatarUrl}
         <Avatar {supabase} url={avatarUrl} size={6} />
       {:else}
         <img src="/avatar.png" alt="User Avatar" class="avatar" />
-      {/if} -->
-      <span class="username">{username}</span>
+      {/if}
+      <span class="username">{currentUsername}</span>
     </div>
   </div>
   <div class="nav-items">

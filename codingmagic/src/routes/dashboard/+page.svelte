@@ -2,7 +2,6 @@
 <script lang="ts">
   export let data;
   import { onMount, setContext } from "svelte";
-  import { writable } from "svelte/store";
   import CourseGrid from "$lib/Components/Dashboard/CourseGrid.svelte";
   import Header from "$lib/Components/Dashboard/Header.svelte";
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
@@ -13,7 +12,6 @@
 
   setContext("supabaseContext", { supabase, session });
 
-  let username = session?.user.user_metadata.name;
   let shouldShowModal = true;
 
   console.log(supabase);
@@ -30,7 +28,6 @@
     const hasSeenWelcome = localStorage.getItem("has_seen_welcome");
     console.log("Has seen welcome:")
     console.log(hasSeenWelcome)
-    console.log("ur cooked if its true")
     if (hasSeenWelcome === "true") {
       shouldShowModal = false;
     } else {
@@ -47,9 +44,9 @@
 <main>
   <div class="dashboard">
     {#if shouldShowModal}
-      <WelcomeModal {supabase} {session}{username} />
+      <WelcomeModal {supabase} {session} />
     {/if}
-    <Navbar {supabase} {session} {username} />
+    <Navbar {supabase} {session}/>
     <div class="content">
       <div class="header-cooked">
         <Header>

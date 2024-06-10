@@ -4,7 +4,8 @@
   import { fade, scale } from "svelte/transition";
   export let supabase;
   export let session;
-  export let username;
+
+  let currentUsername = "";
 
   const showModal = writable(true);
 
@@ -31,6 +32,23 @@
       .update({ has_seen_welcome: true })
       .eq("user_id", session.user.id);
   };
+
+  onMount(async () => {
+    const { error, data } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("user_id", session?.user.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching username:", error);
+      currentUsername = "Failed to load your Username";
+    } else if (data) {
+      currentUsername = data.username;
+    } else {
+      currentUsername = "Username not found";
+    }
+  });
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -44,7 +62,7 @@
         <p class="modal-text">
           You have stumbled upon a realm where dreams and reality intertwine.
           Prepare to embark on a journey filled with wonder and enchantment,
-          {username}. Let your imagination soar as you unlock the secrets of
+          {currentUsername}. Let your imagination soar as you unlock the secrets of
           this magical world.
         </p>
         <button class="modal-button" on:click={closeModal}>
