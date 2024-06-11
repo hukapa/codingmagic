@@ -5,9 +5,6 @@
 <header>
   <div class="header-content">
     <slot />
-    <div class="center-container">
-      <SearchBar />
-    </div>
     <div class="header-icons">
       <i class="fas fa-bell notification-icon"></i>
       <i class="fas fa-question-circle support-icon"></i>
@@ -67,13 +64,6 @@
     justify-content: flex-end;
     width: 100%;
     max-width: 1200px; 
-  }
-
-  .center-container {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
   }
 
   .header-icons {

@@ -94,7 +94,7 @@
       </li>
       <li>
         <a href="/bookmark">
-          <i class="icon fas fa-star"></i>
+          <i class="icon fas fa-bookmark"></i>
           <span class={expanded ? "label" : "label hidden"}>Favorites</span>
         </a>
       </li>

@@ -126,14 +126,13 @@
           disabled={loading}
           on:click={updateProfile}
         />
-        <button
-          class="button secondary"
-          on:click={() => {
-            goto("/dashboard");
-          }}>Back to Dashboard</button
-        >
       </div>
     </form>
+    <button
+      class="button secondary"
+      style="margin-top: 10px;"
+      on:click={() => goto("/dashboard")}>Back to Dashboard</button
+    >
   </div>
 </div>
 
@@ -144,7 +143,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     background-color: #1f1b2b;
     background-image: linear-gradient(
         45deg,
@@ -165,6 +163,10 @@
       0 0,
       20px 20px;
     padding: 2rem;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
   }
 
   .form-widget {

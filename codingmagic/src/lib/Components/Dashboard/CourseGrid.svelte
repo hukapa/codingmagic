@@ -1,8 +1,14 @@
+<!-- CourseGrid.svelte -->
 <script lang="ts">
-  import { redirect } from "@sveltejs/kit";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
+
+  export let searchTerm = "";
+
+  $: filteredCourses = courses.filter((course) =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   interface Course {
     id: number;
@@ -31,13 +37,52 @@
     },
     {
       id: 3,
-      title: "CS:GO",
+      title: "Java",
       bookmarked: false,
-      image: "/CodingMagic-1.jpg",
+      image: "/java.png",
       description:
-        "CS:GO got released today, and its the best programming language in the world in every aspect.",
+        "Java is a robust, object-oriented language used for building enterprise applications, mobile apps, and games.",
     },
-    // Add more courses here
+    {
+      id: 4,
+      title: "JavaScript",
+      bookmarked: false,
+      image: "/javascript.png",
+      description:
+        "JavaScript is the programming language of the web, enabling interactive and dynamic websites and web applications.",
+    },
+    {
+      id: 5,
+      title: "Swift",
+      bookmarked: false,
+      image: "/swift.png",
+      description:
+        "Swift is a modern, safe, and expressive language developed by Apple for building iOS, macOS, and other Apple platform apps.",
+    },
+    {
+      id: 6,
+      title: "Go",
+      bookmarked: false,
+      image: "/go.png",
+      description:
+        "Go is an open-source, statically typed language designed for building efficient and scalable systems and applications.",
+    },
+    {
+      id: 7,
+      title: "TypeScript",
+      bookmarked: false,
+      image: "/typescript.png",
+      description:
+        "TypeScript is a superset of JavaScript that adds optional static typing, improving tooling and enabling better scalability for large-scale applications.",
+    },
+    {
+      id: 8,
+      title: "Dart",
+      bookmarked: false,
+      image: "/dart.png",
+      description:
+        "Dart is a client-optimized language developed by Google for building fast and modern web, mobile, and desktop applications.",
+    },
   ];
 
   let cardAnimation: any;
@@ -71,9 +116,11 @@
     });
   }
 
-  function toggleBookmark(course: Course) {
+  const dispatch = createEventDispatcher();
+
+  function toggleBookmark(course: any) {
     course.bookmarked = !course.bookmarked;
-    // Add additional functionality, such as saving the bookmarked course
+    dispatch("bookmarkToggled", course.id);
   }
 
   function redirectToCourseDetails(courseTile: string) {
@@ -82,7 +129,7 @@
 </script>
 
 <div class="course-grid">
-  {#each courses as course (course.id)}
+  {#each filteredCourses as course (course.id)}
     <div class="card" in:cardAnimation>
       <div class="course-header">
         <div class="header-content">

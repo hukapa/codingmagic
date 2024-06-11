@@ -7,12 +7,14 @@
   import Navbar from "$lib/Components/Dashboard/Navbar.svelte";
   import { goto } from "$app/navigation";
   import WelcomeModal from "$lib/Components/Dashboard/WelcomeModal.svelte";
+  import SearchBar from "$lib/Components/Dashboard/SearchBar.svelte";
 
   const { supabase, session } = data;
 
   setContext("supabaseContext", { supabase, session });
 
   let shouldShowModal = true;
+  let searchTerm = "";
 
   console.log(supabase);
   console.log(session);
@@ -26,8 +28,8 @@
 
   onMount(async () => {
     const hasSeenWelcome = localStorage.getItem("has_seen_welcome");
-    console.log("Has seen welcome:")
-    console.log(hasSeenWelcome)
+    console.log("Has seen welcome:");
+    console.log(hasSeenWelcome);
     if (hasSeenWelcome === "true") {
       shouldShowModal = false;
     } else {
@@ -46,15 +48,18 @@
     {#if shouldShowModal}
       <WelcomeModal {supabase} {session} />
     {/if}
-    <Navbar {supabase} {session}/>
+    <Navbar {supabase} {session} />
     <div class="content">
       <div class="header-cooked">
         <Header>
+          <div class="center-container">
+            <SearchBar on:search={(e) => (searchTerm = e.detail)} />
+          </div>
           <!-- Other header components: Notifications, Support, etc. -->
         </Header>
       </div>
       <!-- Main content area -->
-      <CourseGrid />
+      <CourseGrid {searchTerm} />
     </div>
   </div>
 </main>
@@ -64,8 +69,6 @@
     display: flex;
     height: 100%;
     width: 100%;
-    /* background-image: url(/CodingMagic-1.jpg);
-    background-size: cover; */
     background-color: black;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
@@ -77,5 +80,12 @@
 
   .header-cooked {
     padding-left: 80px;
+  }
+
+  .center-container {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
   }
 </style>
