@@ -1,10 +1,11 @@
-<!-- Navbar.svelte -->
+<!--Component Navbar.svelte -->
 <script lang="ts">
   export let supabase: any;
-  export let session;
+  export let session:any;
   import { goto, invalidateAll } from "$app/navigation";
   import { onMount } from "svelte";
   import Avatar from "../Avatar.svelte";
+  import { coursesStore } from "../../../routes/dashboard/stores";
 
   let currentUsername = "";
 
@@ -51,6 +52,14 @@
   }
 
   onMount(async () => {
+    updateUsername();
+  });
+
+  coursesStore.subscribe(() => {
+    updateUsername();
+  });
+
+  async function updateUsername() {
     const { error, data } = await supabase
       .from("profiles")
       .select("username")
@@ -59,13 +68,13 @@
 
     if (error) {
       console.error("Error fetching username:", error);
-      currentUsername = "Failed to load your Username";
+      currentUsername = "Failed to load Username";
     } else if (data) {
       currentUsername = data.username;
     } else {
       currentUsername = "Username not found";
     }
-  });
+  }
 </script>
 
 <nav
@@ -129,6 +138,7 @@
 
   .navbar.expanded {
     width: 200px;
+    z-index: 10;
   }
 
   .top {

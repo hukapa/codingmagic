@@ -1,89 +1,27 @@
-<!-- CourseGrid.svelte -->
+<!--Component CourseGrid.svelte -->
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher, getContext, onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { fly } from "svelte/transition";
+  import { fly, fade } from "svelte/transition";
+  import { coursesStore } from "../../../routes/dashboard/stores";
 
   export let searchTerm = "";
 
-  $: filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const { supabase, session }: any = getContext("supabaseContext");
+  $: filteredCourses = $coursesStore.filter((course) => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    return course.title.toLowerCase().includes(lowerCaseSearchTerm);
+  });
 
-  interface Course {
-    id: number;
-    title: string;
-    bookmarked: boolean;
-    image: string;
-    description: string;
-  }
-
-  let courses: Course[] = [
-    {
-      id: 1,
-      title: "Csharp",
-      bookmarked: false,
-      image: "/csharp.png",
-      description:
-        "C# is a versatile programming language by Microsoft for various applications.",
-    },
-    {
-      id: 2,
-      title: "Python",
-      bookmarked: false,
-      image: "/python.jpg",
-      description:
-        "Python is a powerful, user-friendly language widely used in data analysis, machine learning, and web development",
-    },
-    {
-      id: 3,
-      title: "Java",
-      bookmarked: false,
-      image: "/java.png",
-      description:
-        "Java is a robust, object-oriented language used for building enterprise applications, mobile apps, and games.",
-    },
-    {
-      id: 4,
-      title: "JavaScript",
-      bookmarked: false,
-      image: "/javascript.png",
-      description:
-        "JavaScript is the programming language of the web, enabling interactive and dynamic websites and web applications.",
-    },
-    {
-      id: 5,
-      title: "Swift",
-      bookmarked: false,
-      image: "/swift.png",
-      description:
-        "Swift is a modern, safe, and expressive language developed by Apple for building iOS, macOS, and other Apple platform apps.",
-    },
-    {
-      id: 6,
-      title: "Go",
-      bookmarked: false,
-      image: "/go.png",
-      description:
-        "Go is an open-source, statically typed language designed for building efficient and scalable systems and applications.",
-    },
-    {
-      id: 7,
-      title: "TypeScript",
-      bookmarked: false,
-      image: "/typescript.png",
-      description:
-        "TypeScript is a superset of JavaScript that adds optional static typing, improving tooling and enabling better scalability for large-scale applications.",
-    },
-    {
-      id: 8,
-      title: "Dart",
-      bookmarked: false,
-      image: "/dart.png",
-      description:
-        "Dart is a client-optimized language developed by Google for building fast and modern web, mobile, and desktop applications.",
-    },
-  ];
+  onMount(async () => {
+    const { data: courses, error } = await supabase.from("courses").select("*");
+    if (error) {
+      console.error("Error fetching courses:", error);
+    } else {
+      filteredCourses = courses;
+      coursesStore.set(courses);
+    }
+  });
 
   let cardAnimation: any;
 
@@ -118,9 +56,21 @@
 
   const dispatch = createEventDispatcher();
 
-  function toggleBookmark(course: any) {
-    course.bookmarked = !course.bookmarked;
-    dispatch("bookmarkToggled", course.id);
+  async function toggleBookmark(course: any) {
+    const userId = session?.user.id;
+
+    const isBookmarked = course.bookmarked;
+    const { data, error } = await supabase
+      .from("favorite_courses")
+      .eq("user_id", session?.user.id)
+      .upsert({ user_id: userId, course_id: course.id })
+      .not(isBookmarked, "course_id");
+
+    if (error) {
+      console.error("Error updating bookmark:", error);
+    } else {
+      course.bookmarked = !isBookmarked;
+    }
   }
 
   function redirectToCourseDetails(courseTile: string) {
@@ -129,8 +79,8 @@
 </script>
 
 <div class="course-grid">
-  {#each filteredCourses as course (course.id)}
-    <div class="card" in:cardAnimation>
+  {#each filteredCourses as course, index (course.id)}
+    <div class="card" in:fly={{ delay: 250 * index, duration: 500 }}>
       <div class="course-header">
         <div class="header-content">
           <h3>{course.title}</h3>

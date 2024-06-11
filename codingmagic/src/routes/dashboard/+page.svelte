@@ -1,4 +1,4 @@
-<!-- dashboard -->
+<!--Page dashboard -->
 <script lang="ts">
   export let data;
   import { onMount, setContext } from "svelte";
@@ -48,7 +48,9 @@
     {#if shouldShowModal}
       <WelcomeModal {supabase} {session} />
     {/if}
-    <Navbar {supabase} {session} />
+    <class class="navbar-component" style="z-index: 100;">
+      <Navbar {supabase} {session} />
+    </class>
     <div class="content">
       <div class="header-cooked">
         <Header>
@@ -59,7 +61,7 @@
         </Header>
       </div>
       <!-- Main content area -->
-      <CourseGrid {searchTerm} />
+      <CourseGrid {searchTerm}/>
     </div>
   </div>
 </main>
