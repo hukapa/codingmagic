@@ -3,7 +3,7 @@
   import { goto } from "$app/navigation";
 
   function startCourse() {
-    goto("/courses/Csharp/lesson1");
+    goto("/courses/Csharp/lesson");
   }
 </script>
 
