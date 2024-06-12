@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
   export let data;
   let { supabase, session } = data;
   $: ({ supabase, session } = data);
 
-  console.log(supabase)
-  console.log(session)
+  console.log(supabase);
+  console.log(session);
 
   let y: number;
   let height: number;
@@ -16,6 +18,23 @@
   }
 
   let videoSource = "CodingMagic-vid-1.mp4";
+
+  let courses: any[] = [];
+
+  onMount(async () => {
+    const { data, error } = await supabase.from("courses").select("*");
+    if (error) {
+      console.error("Error fetching courses:", error);
+    } else {
+      courses = data;
+    }
+  });
+
+  let expandedCourseId: null;
+
+  const toggleCourseExpand = (courseId: any) => {
+    expandedCourseId = expandedCourseId === courseId ? null : courseId;
+  };
 </script>
 
 <section class="home">
@@ -32,9 +51,9 @@
           <ul class="navlinks">
             <li><a href=""></a></li>
             {#if session !== null}
-            <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
             {:else}
-            <li><a href="/login">Login</a></li>
+              <li><a href="/login">Login</a></li>
             {/if}
             <li><a href="#">Courses</a></li>
             <li><a href="#">About</a></li>
@@ -78,11 +97,30 @@
   </div>
 </section>
 
-<section class="asd">
-  <div
-    class="img-parallax"
-    style=" background-image: url(/CodingMagic-1.jpg);"
-  ></div>
+<section class="course-section">
+  <h2 class="line-title">Available Courses</h2>
+  <div class="course-grid">
+    {#each courses as course}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div
+        class="item"
+        class:active={expandedCourseId === course.id}
+        style="background-image: url({course.image})"
+        on:click={() => toggleCourseExpand(course.id)}
+      >
+        <div class="item-desc">
+          <h3>{course.title}</h3>
+          <div class="course-card-description">
+            <p>{course.description}</p>
+            <a href={`/courses/${course.id}`} class="course-card-cta"
+              >Enroll Now</a
+            >
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
 </section>
 
 <style>
@@ -445,5 +483,97 @@
     color: wheat;
     text-align: center;
     font-size: 1.9rem;
+  }
+
+  .line-title {
+    position: relative;
+    width: 400px;
+  }
+  .line-title::before,
+  .line-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    border-radius: 2px;
+  }
+  .line-title::before {
+    width: 100%;
+    background: #f2f2f2;
+  }
+  .line-title::after {
+    width: 32px;
+    background: #e73700;
+  }
+  .course-section {
+    padding: 60px 50px;
+  }
+  .course-grid {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+  .course-grid::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  .course-section .item {
+    margin: 0 15px;
+    min-width: 320px;
+    height: 400px;
+    display: flex;
+    align-items: flex-end;
+    background: #343434 no-repeat center center / cover;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s ease-in-out;
+    cursor: pointer;
+    scroll-snap-align: center;
+  }
+  .course-section .item.active {
+    width: 500px;
+    box-shadow: 12px 40px 40px rgba(0, 0, 0, 0.25);
+  }
+  .course-section .item:after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  }
+  .course-section .item-desc {
+    padding: 0 24px 12px;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transform: translateY(calc(100% - 54px));
+    transition: all 0.4s ease-in-out;
+  }
+  .course-section .item.active .item-desc {
+    transform: none;
+  }
+  .course-section .item-desc p {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: all 0.4s ease-in-out 0.2s;
+  }
+  .course-section .item.active .item-desc p {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .course-card-description {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .course-section .item.active .course-card-description {
+    max-height: 300px;
   }
 </style>
