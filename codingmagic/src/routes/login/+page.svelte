@@ -225,6 +225,7 @@
 </script>
 
 <div class="Container-Body">
+  <a href="/" class="back-link">Back</a>
   <div
     class={isRightPanelActive ? "container" : "container right-panel-active"}
     id="container"
@@ -407,11 +408,13 @@
                 Login with a
                 <span class="magic">
                   <h3 class="magic-text">
+                    <!-- svelte-ignore a11y-invalid-attribute -->
                     <a href="" on:click={toggleMagicLinkSignInPage}
                       >Magic Link!</a
                     >
                   </h3>
                 </span>
+                for fast sign in
               </h2>
             </div>
           {/if}
@@ -692,5 +695,19 @@
 
   .container.right-panel-active .overlay-right {
     transform: translateX(20%);
+  }
+  .back-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #ddd;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+
+  .back-link:hover {
+    background-color: #ccc;
   }
 </style>
