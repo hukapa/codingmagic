@@ -5,8 +5,6 @@
   let { supabase, session }: any = data;
   $: ({ supabase, session } = data);
 
-  console.log(supabase);
-  console.log(session);
 
   let y: number;
   let height: number;

@@ -1,3 +1,4 @@
+<!-- /login +page.svelte -->
 <script lang="ts">
   export let data;
   import SocialContainer from "$lib/Components/SocialContainer.svelte";
@@ -5,9 +6,6 @@
 
   let { supabase, session } = data;
   $: ({ supabase, session } = data);
-
-  console.log(supabase);
-  console.log(session);
 
   let username: "";
   let email = "";
@@ -23,7 +21,6 @@
   $: if (session !== null) {
     goto("/dashboard");
   }
-
 
   // Sign In With Email Function
   async function signInWithEmail() {
@@ -237,7 +234,7 @@
       <div class="form-container sign-up-container">
         <form id="signUpForm" on:submit|preventDefault={signUpAuth}>
           <h1>Create Account</h1>
-          <SocialContainer />
+          <SocialContainer {supabase} {session} />
           <span>or use your email for registration</span>
           <input
             type="text"
@@ -272,7 +269,7 @@
       <div class="form-container sign-in-container">
         <form id="signInForm" on:submit|preventDefault={signInAuth}>
           <h1>Sign in</h1>
-          <SocialContainer />
+          <SocialContainer {supabase} {session} />
           <span>or use your account</span>
           <input
             type="email"
@@ -313,7 +310,7 @@
           on:submit|preventDefault={sendPasswordResetEmail}
         >
           <h1>Reset Password</h1>
-          <SocialContainer />
+          <SocialContainer {supabase} {session} />
           <span style="padding-bottom: 4vh;"
             >Enter your email to reset your password</span
           >
@@ -363,7 +360,7 @@
               <h1 class="magic-text">Magic Link!</h1>
             </span>
           </h2>
-          <SocialContainer />
+          <SocialContainer {supabase} {session} />
           <span style="padding-bottom: 4vh;"
             >Enter your email to join us as fast as possible!</span
           >

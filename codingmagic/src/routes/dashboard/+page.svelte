@@ -16,9 +16,6 @@
   let shouldShowModal = true;
   let searchTerm = "";
 
-  console.log(supabase);
-  console.log(session);
-
   if (session !== null) {
     console.log("session is not null");
   } else {
@@ -61,7 +58,7 @@
         </Header>
       </div>
       <!-- Main content area -->
-      <CourseGrid {searchTerm}/>
+      <CourseGrid {searchTerm} />
     </div>
   </div>
 </main>
@@ -71,7 +68,6 @@
     display: flex;
     height: 100%;
     width: 100%;
-    background-color: black;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
