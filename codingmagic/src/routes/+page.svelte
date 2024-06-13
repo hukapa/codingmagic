@@ -109,14 +109,6 @@
   </div>
 </section>
 
-<section class="video-1">
-  <video width="200px" height="100px" controls>
-    <track kind="captions" />
-    <source src={videoSource} type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
-</section>
-
 <section class="course-section" id="courses">
   <h2 class="myH2">Courses</h2>
   <div class="course-list">

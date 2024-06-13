@@ -96,13 +96,13 @@
   <div class="nav-items">
     <ul class:centralized={!expanded}>
       <li>
-        <a href="/profile">
+        <a href="/">
           <i class="icon fas fa-user-astronaut"></i>
-          <span class={expanded ? "label" : "label hidden"}>Profile</span>
+          <span class={expanded ? "label" : "label hidden"}>Coding Magic</span>
         </a>
       </li>
       <li>
-        <a href="/bookmark">
+        <a href="">
           <i class="icon fas fa-bookmark"></i>
           <span class={expanded ? "label" : "label hidden"}>Favorites</span>
         </a>

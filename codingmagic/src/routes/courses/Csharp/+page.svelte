@@ -1,4 +1,4 @@
-<!-- +page.svelte -->
+<!-- /Csharp/lesson +page.svelte -->
 <script lang="ts">
   import { goto } from "$app/navigation";
 
@@ -9,21 +9,29 @@
 
 <main>
   <div class="container">
-    <div class="content">
-      <h1>Master the Art of C# Magic</h1>
-      <p>
-        Embark on a mystical journey through the realm of C# programming. In
-        this comprehensive course, you'll learn to wield the power of
-        object-oriented programming, conjure console applications, and construct
-        enchanting Windows desktop applications. Explore advanced incantations
-        like LINQ, asynchronous programming, and more. By the end of your
-        training, you'll possess the arcane knowledge to craft robust and
-        efficient C# applications for various enchanted realms.
-      </p>
-      <button class="button" on:click={startCourse}>
-        <i class="fas fa-hat-wizard"></i>
-        Begin Your Magical Quest
-      </button>
+    <div class="content-container">
+      <div class="content">
+        <div class="back-button">
+          <a href="/dashboard" class="button" on:click={() => {goto("/dashboard")}}>
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+          </a>
+        </div>
+        <h1>Master the Art of C# Magic</h1>
+        <p>
+          Embark on a mystical journey through the realm of C# programming. In
+          this comprehensive course, you'll learn to wield the power of
+          object-oriented programming, conjure console applications, and
+          construct enchanting Windows desktop applications. Explore advanced
+          incantations like LINQ, asynchronous programming, and more. By the end
+          of your training, you'll possess the arcane knowledge to craft robust
+          and efficient C# applications for various enchanted realms.
+        </p>
+        <button class="button" on:click={startCourse}>
+          <i class="fas fa-hat-wizard"></i>
+          Begin Your Magical Quest
+        </button>
+      </div>
     </div>
   </div>
   <div class="background">
@@ -50,20 +58,56 @@
     height: 100vh;
     color: #fff;
     overflow: hidden;
+    position: relative;
   }
+
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    position: relative;
-    z-index: 1;
+  }
+
+  .content-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 800px;
+    text-align: center;
+    z-index: 100;
   }
 
   .content {
-    max-width: 800px;
-    text-align: center;
-    padding: 40px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .back-button {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .back-button .button {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 8px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .back-button .button:hover {
+    background-color: #fff;
+    color: #333;
+  }
+
+  .back-button .button i {
+    margin-right: 8px;
   }
 
   h1 {

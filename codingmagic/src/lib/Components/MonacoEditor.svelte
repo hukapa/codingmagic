@@ -4,9 +4,9 @@
   import * as monaco from "monaco-editor";
   import type { editor } from "monaco-editor";
 
-  export let code = ""; // Código inicial
-  export let language = "csharp"; // Linguagem padrão é C#
-  export let theme = "vs-dark"; // Tema escuro padrão
+  export let code = ""; 
+  export let language = "csharp"; 
+  export let theme = "vs-dark"; 
 
   let editorContainer: HTMLElement | null;
   let editor: editor.IStandaloneCodeEditor;
