@@ -128,10 +128,10 @@
           <p>{course.description}</p>
           {#if session}
             <a href={`/courses/${course.title}`} class="course-card-cta"
-              >Iniciar Curso</a
+              >Start Now!</a
             >
           {:else}
-            <a href="/login" class="course-card-cta">Iniciar Sessão</a>
+            <a href="/login" class="course-card-cta">Sign In</a>
           {/if}
         </div>
       </div>
